@@ -4,12 +4,9 @@ title: About
 permalink: /about/
 ---
 
-Some information about you!
+This is Ying Liu's blogs for technology-related thoughts. 
 
-### More Information
+I also have a <a href="http://yingtechthink.blogspot.com/">.NET Blog</a> 
+that has my articles written in 2013 and the first half of 2014. 
 
-A place to include any other types of information that you'd like to include about yourself.
-
-### Contact me
-
-[email@domain.com](mailto:email@domain.com)
+Thanks for reading!
