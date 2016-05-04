@@ -11,7 +11,6 @@ description: Thoughts about coding and business
 # URL of your avatar or profile pic (you could use your GitHub profile pic)
 avatar: https://avatars0.githubusercontent.com/u/4055382?v=3&u=24cdb09a612b3d3f7c448c50bd7bf16c3bb05b8e&s=40 
 
-#
 # Flags below are optional
 #
 
@@ -41,7 +40,9 @@ google_analytics: UA-32608020-3
 
 # Your website URL (e.g. http://barryclark.github.io or http://www.barryclark.co)
 # Used for Sitemap.xml and your RSS feed
-url:
+url: http://www.mindissoftware.com/
+
+timezone: America/Los_Angeles
 
 # If you're hosting your site at a Project repository on GitHub pages
 # (http://yourusername.github.io/repository-name)
