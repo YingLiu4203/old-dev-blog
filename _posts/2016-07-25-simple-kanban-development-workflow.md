@@ -1,7 +1,6 @@
-
 ---
 layout: post
-title: 极简看板开发流程
+title: 简单看板开发流程
 categories:
 - Process
 tags:
