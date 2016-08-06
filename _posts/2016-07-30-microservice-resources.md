@@ -28,6 +28,7 @@ git clone --depth=1 https://github.com/kbastani/spring-cloud-event-sourcing-exam
 
 ### 3) Set the docker environment variable to point to the local Docker daemon
 没有这个变量，build会报错。
+
 ```sh
 export DOCKER_HOST=unix:///var/run/docker.sock
 ```
