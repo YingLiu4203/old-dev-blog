@@ -1,6 +1,6 @@
 ---
 layout: post
-title: spring-security-oauth2
+title: Spring Security with OAuth2
 categories:
 - Development
 tags:
@@ -86,7 +86,7 @@ The OAuth2 client filter is `OAuth2ClientAuthenticationProcessingFilter`. It is 
 #### 3.2 Authorization with OAuth2
 An OAuth2 server provides a set of endpoints to answer requests for authorization code and access code. `@EnableAuthorizationServer` does all the dirty works by default.
 
-`@EnableResourceServer` declares a resource server that is protected by the access token. By default, it creates a security filter with `@Order(3)`.  It should run before the main application security. 
+`@EnableResourceServer` declares a resource server that is protected by the access token. By default, it creates a security filter with `@Order(3)`.  It should run before the main application security.
 
 [1]: https://tools.ietf.org/html/rfc6749#section-4
 [2]: http://docs.spring.io/spring-security/site/docs/current/reference/html/technical-overview.html

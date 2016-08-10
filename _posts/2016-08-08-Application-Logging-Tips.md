@@ -4,7 +4,7 @@ title: Application Logging Tips
 categories:
 - Development
 tags:
-- programming
+- Programming
 ---
 
 ## 为什么需用Logging
