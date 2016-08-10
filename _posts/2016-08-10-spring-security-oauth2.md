@@ -1,4 +1,4 @@
---
+---
 layout: post
 title: spring-security-oauth2
 categories:
@@ -73,12 +73,21 @@ When add `@EnableWebSecurity` to an instance of `WebSecurityConfigurerAdapter`, 
 
 To specify what authentication is used and where to apply authorization, we need to customize the `WebSecurityConfigurerAdapter.configure(HttpSecurity http)` method.
 
+Spring security has build in support for a `/logout` endpoint which will clean up the session data. However, it's a POST request. When CSRF protection is enable, a POST request needs to provide a token to be included in the request.  The token can be configured to be sent in cookie or in http header.
 
-### Spring Security with OAuth2
+### 3. Authentication with OAuth2
+[The Spring Boot with OAuth2 tutorial](3) is a very good introduction to Spring OAuth2.
 
-`@EnableOAuth2Sso` is used to enable OAuth2 authentication. When `@EnableOAuth2Sso` is used without a `WebSecurityConfigurerAdapter`, then all paths are secured. The OAuth2 authentication filter is inserted before `BasicAuthenticationFilter` and an authentication entry point is configured. If there is an existing WebSecurityConfigurerAdapter provided by the user and annotated with `@EnableOAuth2Sso`, it is enhanced by adding an authentication filter and an authentication entry point.
+#### 3.1 Authentication with OAuth2
+`@EnableOAuth2Sso` is used to enable OAuth2 authentication. When `@EnableOAuth2Sso` is used without a `WebSecurityConfigurerAdapter`, then all paths are secured. The OAuth2 client filter is inserted before `BasicAuthenticationFilter` and an authentication entry point is configured. If there is an existing WebSecurityConfigurerAdapter provided by the user and annotated with `@EnableOAuth2Sso`, it is enhanced by adding an OAuth2 client filter and an authentication entry point.
 
-Spring security has build in support for a `/logout` endpoint which will clean up the session data. However, it's a POST request. When CSRF protection is enable, a POST request needs to provide a token to be included in the request.  The token can be sent in cookie or in http header. 
+The OAuth2 client filter is `OAuth2ClientAuthenticationProcessingFilter`. It is used to acquire an OAuth2 access token from an authorization server and load an `Authentication` object into `SecurityContext`. However, it needs the `OAuth2ClientContextFilter` filter to redirect a request to authorization server. The two filters use `UserRedirectRequiredException` to pass control. Both need to be wired into the filter chain and `OAuth2ClientContextFilter` should execute before the main Spring security filter.
+
+#### 3.2 Authorization with OAuth2
+An OAuth2 server provides a set of endpoints to answer requests for authorization code and access code. `@EnableAuthorizationServer` does all the dirty works by default.
+
+`@EnableResourceServer` declares a resource server that is protected by the access token. By default, it creates a security filter with `@Order(3)`.  It should run before the main application security. 
 
 [1]: https://tools.ietf.org/html/rfc6749#section-4
 [2]: http://docs.spring.io/spring-security/site/docs/current/reference/html/technical-overview.html
+[3]: https://spring.io/guides/tutorials/spring-boot-oauth2/
