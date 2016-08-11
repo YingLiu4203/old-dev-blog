@@ -55,6 +55,7 @@ An example `AccessDecisionManager` implementation is `RoleVoter`. It uses `ROLE_
 
  #### 4. Web Security
 Spring has a number of filters to process a request. Security-related filters in their execution order are:
+
 * `SecurityContextPersistenceFilter` to setup `SecurityContext`.
 * `ConcurrentSessionFilter` to update `SessionRegistry`.
 * Authentication filters such as `UsernamePasswordAuthenticationFilter` or `BasicAuthenticationFilter` to authenticate a request.
