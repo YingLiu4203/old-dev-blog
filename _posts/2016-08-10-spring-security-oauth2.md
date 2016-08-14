@@ -14,7 +14,7 @@ Though OAuth2 is an authorization protocol, due to the close relationship of aut
 
 In a simplified view, OAuth2 workflow involves a resource owner (using a user-agent such as a browser), an OAuth2 client, an OAuth2 server and a resource server. An OAuth2 server has two endpoints: one authorization uri and one access token uri. The authorization endpoint is used to authenticate a resource owner and ask the resource owner to grant the requested scope. The access token endpoint is used to generate an access token for the requested scope. A resource server also has a resource uri that is ued by OAuth2 client to access resources.
 
-When [an auth workflow](1) starts, an OAuth2 client first directs the resource owner to send a grant request to the authorization endpoint. In the request, the client provides client id, client secret , requested scope, local state and a redirection uri. The client id, client secret and redirection uri are pre-configured in an OAuth2 server. When the OAuth2 server receives the grant request, it starts the authentication and grant process. At the end, it sends the grant or deny result back to the OAuth2's redirection uri. The result includes an an authorization code and the client's original local state.
+When [an auth workflow][1] starts, an OAuth2 client first directs the resource owner to send a grant request to the authorization endpoint. In the request, the client provides client id, client secret , requested scope, local state and a redirection uri. The client id, client secret and redirection uri are pre-configured in an OAuth2 server. When the OAuth2 server receives the grant request, it starts the authentication and grant process. At the end, it sends the grant or deny result back to the OAuth2's redirection uri. The result includes an an authorization code and the client's original local state.
 
 Then the OAuth2 client requests an access token from the the authorization server's token endpoint by including the authorization code received in the previous step. The authorization code is used to authenticate the OAuth2 client. If valid, the authorization server responds back with an access token, an option refresh token and other parameters.
 
@@ -23,7 +23,7 @@ If everything works well, the OAuth2 client uses the access token to request res
 When including `@EnableOAuth2Sso` in a Spring boot application, an OAuth2 client authentication filter is added to the Spring http security chain. It can be used to authenticate users and request access code for resource access.
 
 ## 2. Spring Security
-The best thing about Spring security is that it is [self-contained and plug-and-play](2).  
+The best thing about Spring security is that it is [self-contained and plug-and-play][2].  
 
 ### 2.1. Core Components
 
@@ -76,7 +76,7 @@ To specify what authentication is used and where to apply authorization, we need
 Spring security has build in support for a `/logout` endpoint which will clean up the session data. However, it's a POST request. When CSRF protection is enable, a POST request needs to provide a token to be included in the request.  The token can be configured to be sent in cookie or in http header.
 
 ## 3. Authentication with OAuth2
-[The Spring Boot with OAuth2 tutorial](3) is a very good introduction to Spring OAuth2.
+[The Spring Boot with OAuth2 tutorial][3] is a very good introduction to Spring OAuth2.
 
 ### 3.1 Authentication with OAuth2
 `@EnableOAuth2Sso` is used to enable OAuth2 authentication. When `@EnableOAuth2Sso` is used without a `WebSecurityConfigurerAdapter`, then all paths are secured. The OAuth2 client filter is inserted before `BasicAuthenticationFilter` and an authentication entry point is configured. If there is an existing WebSecurityConfigurerAdapter provided by the user and annotated with `@EnableOAuth2Sso`, it is enhanced by adding an OAuth2 client filter and an authentication entry point.
@@ -90,4 +90,4 @@ An OAuth2 server provides a set of endpoints to answer requests for authorizatio
 
 [1]: https://tools.ietf.org/html/rfc6749#section-4
 [2]: http://docs.spring.io/spring-security/site/docs/current/reference/html/technical-overview.html
-[3]: https://spring.io/guides/tutorials/spring-boot-oauth2/
+[3]: https://spring.io/guides/tutorials/spring-boot-oauth2
