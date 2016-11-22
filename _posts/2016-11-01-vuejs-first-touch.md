@@ -33,9 +33,9 @@ The `vue init webpack my-project` asks you whether to use ESLint, unit test and 
 The `npm install` may come with a warning message "eslint-config-standard@6.2.1 requires a peer of eslint-plugin-promise@>=3.3.0 but none was installed.".  To fix it, first edit the line "eslint-plugin-promise" version in `package.json` from "^2.0.1" to "^3.3.0". then run `npm install` to install the new version.    
 
 ### 1.2. Declarative Rendering
-Vue can render data to declaratioins in a corresponding template element. The declaration can be one of the following format: 
+Vue can render data to declaratioins in a corresponding template element. 
 
-Additionally, Vue has a component system to support component composing
+Additionally, Vue has a component system to support component composing.
 
 ## 2. Basic Concepts
 ### 2.1. The Vue Instance
