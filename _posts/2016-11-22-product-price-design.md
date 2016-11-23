@@ -8,12 +8,12 @@ tags:
 ---
 
 ## 1. Price Calculation
-In http://dev.commercetools.com/, a product variant can have a set of prices represented as an array of `Price` values. A price is defined with a scope (customer group, channel and country) and/or an optional period (valid from and/or valid to). A price has a regular value and an optional discounted price. 
+In http://dev.commercetools.com/, a product variant can have a set of prices represented as an array of `Price` values. A price is defined with a scope (customer group, channel and country) and/or an optional period (valid from and/or valid to). A price has a regular value and an optional discounted price. When calculate a price, there are two steps: price selection and discount checking.  
 
 ### 1.1. Price Selection
-When calculate a price, there are two steps: first, the scope and period are used to filter the prices of a product variant. The result should be a single `Price` value. 
+First, the scope and period are used to select the prices of a product variant. The result should be a single `Price` value. 
 
-In price selection, the field priority order is `customer group` > `channel` > `country`, i.e., the `customer group` has the highest priority and the `country` the lowest.  If a field is missing in price, that it matches all.
+In price filtering, the field priority order is `customer group` > `channel` > `country`, i.e., the `customer group` has the highest priority and the `country` the lowest.  If a field is missing in price, that it matches all.
 
 ### 1.2. Discounted Price
 For a elected price, use the `value` in the `discounted` field if the `discounted` field is set, otherwise, use the `value` field in the price. 
