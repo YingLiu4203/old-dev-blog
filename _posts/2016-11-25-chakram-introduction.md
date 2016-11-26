@@ -8,7 +8,7 @@ tags:
 ---
 
 ## 1. Chakram Introduction
-Chakram is a framework to test JSON REST endpoint. It use promises and offers a BDD testing style. It is build on node.js, [mocha](http://mochajs.org/) test framework and [chai](http://chaijs.com/) BDD assertion library. It use the [request lib](https://github.com/request/request) to provide comprehensive REST request capaiblities. 
+[Chakram](http://dareid.github.io/chakram/) is a framework to test JSON REST endpoint. It use promises and offers a BDD testing style. It is build on node.js, [mocha](http://mochajs.org/) test framework and [chai](http://chaijs.com/) BDD assertion library. It use the [request lib](https://github.com/request/request) to provide comprehensive REST request capaiblities. 
 
 Chakram allows testing of:
 * status code 
