@@ -6,6 +6,7 @@ categories:
 tags:
 - JavaScript
 ---
+
 ## 1. Overview 
 The `Function` and `Class` are two concepts that confused me for a long time. This article is a summary of my reading of http://exploringjs.com/es6.html. 
 
