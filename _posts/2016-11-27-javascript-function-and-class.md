@@ -7,8 +7,8 @@ tags:
 - JavaScript
 ---
 
-## 1. Overview 
-The `Function` and `Class` are two concepts that confused me for a long time. This article is a summary of my reading of [Exploring ES6](http://exploringjs.com/es6.html). 
+## 1. Pain in the Ass 
+The ES6 `Function`, `Class` and object inheritance are things that confused me for a while. This article is a summary of my reading of [Exploring ES6](http://exploringjs.com/es6.html). 
 
 ## 2. Function Concept
 ### 2.1. Function Roles
