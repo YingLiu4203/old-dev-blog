@@ -176,7 +176,8 @@ Object.prototype.isPrototypeOf(bar)
 Given the above inheritance tree and the fact that a child inherits all properties of its parent, we have the following observation: 
 
 #### 5.3.1. Every Object Inherits from `Object.prototype` 
-Every object has the following properties generated from `Object.getOwnPropertyNames(Object.prototype)` 
+Every object has the following properties generated from `Object.getOwnPropertyNames(Object.prototype)`.
+
 ```js 
 [ '__defineGetter__',
   '__defineSetter__',
