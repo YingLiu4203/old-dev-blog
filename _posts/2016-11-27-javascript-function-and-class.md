@@ -75,7 +75,6 @@ ES6 classes are essentially traditional constructor functions. The `typeof` oper
 
 Unlike function, class definitions are **not hoisted**.
 
-
 ### 4.2. Class Definition
 Class can be defined via expression or declaration. Only constructor method can call `super()`. Only class methods can access `super` property. 
 
@@ -93,14 +92,15 @@ There is no separator `,` between members of class definitions. It's best a best
 
 ## 5. Class, Function and Relationships Among Everything
 Two key points to understand class inheritance or object chain are: 
-1. `[[Prototype]]` refers to the parent object and shows the parent-child inheritance relationships between two objects. Use `Object.getPrototypeOf(obj)` to get the parent object.  Only static properties are inherited between a parent and a child. 
-2.  `prototype` is a normal property whose value is an object. Only a `Function` object has this property. Because a class is a function, it has this property too. Prototype properties (but no static property) are inherited between an instance and its class. `instanceof` operator links an instance and its class and `[[Prototype]]` ancestors. 
+1. `[[Prototype]]` (the legacy `__proto__`) refers to the parent object and define the inheritance relationships between two objects. A parent is the prototype of the child, as defined in the `isPrototypeOf()` method. Use `Object.getPrototypeOf(obj)` to get the parent object. The child has all properties of its parent.  
+2.  `prototype` is a normal property whose value is a special "shadown" object assoicated with the corresponding callable entity. Because a class is a function, it has this property. The `prototype` object of a class has all instance methods and a special `constructor` property that refers back to the paired class. All static methods are properties of the class itself. When a child class `extends` a parent class, the child class's prototype also inherites (its `[[Prototype]]` or `__proto__` refers) to the prototype of the parent class. All instances of a class inherites from the `prototype` of the class, therefore an instance has all properties defined in the `prototype` of the class.  
 
-When a class `Foo` is defined, a special object `Foo.prototype` is created with the special `constructor` method and other user-defined methods. It is the parent of all instances of the class `Foo`. 
+As an example, when a class `Foo` is defined, a special object `Foo.prototype` is created with the special `constructor` method and other user-defined methods. It is the parent of all instances of the class `Foo`. 
 
 ![Object Relationships](http://exploringjs.com/es6/images/classes----methods_150dpi.png)
 
-Giving the following code: 
+### 5.1. Sample Inheritance Tree Code
+We use the following code to define a simple inheritance tree.  
 ```JavaScript
 class Foo {
     constructor(prop) {
@@ -116,7 +116,7 @@ class Foo {
     }
 }
 
-class Bar extends A {
+class Bar extends Foo {
     constructor(prop, extra) {
         super(prop)
         this.extra = extra // must after super() to use this
@@ -127,40 +127,103 @@ let foo = new Foo()
 let bar = new Bar()
 ```
 
-The following statements are true and helpful to understand the concepts. 
+### 5.2. The `isPrototypeOf` Inheritance Tree
+We use "<--" to represent `isPrototypeOf` relationship. We can also use `Object.getPrototypeOf()` checking from bottom up. We  have the following interitance tree:  
+
+`Object.prototype` <-- `Function.prototype` <-- `Object` || `Function` || `Foo`  
+`Foo` <-- `Bar`
+
+`Object.prototype` <-- `Foo.prototype` <-- `Bar.prototype`  
+`Foo.prototype` <-- `foo`
+`Bar.prototype` <-- `bar`
+
+And the inheritance is transitive, i.e., we have  `Foo.prototype` <-- `bar`. Or all the way to the root: `Object.prototype` <-- `bar`. 
+
+The following statements are true and help to understand these concepts. 
 ```JavaScript 
+// Object.prototype is the root. It has a null prototype  
+Object.getPrototypeOf(Object.prototype) === null
 
-typeof(Foo) === 'function'
-Foo instanceof Function 
+// everything inherits from the Object.prototype, this is the callable entity 
+Object.prototype.isPrototypeOf(Function.prototype)
 
-// the [[Prototype]] value
-Object.getPrototypeOf(Foo) === Function.prototype
+// Functions and classes inherits from Function.prototype, directly or via class inheritance 
+Function.prototype.isPrototypeOf(Object)   // Object is a callable entity !
+Function.prototype.isPrototypeOf(Function)
+Function.prototype.isPrototypeOf(Foo)
 
-// the prototype property 
-typeof(Foo.prototype) === 'object'
+// inheritance between classes
+Foo.isPrototypeOf(Bar)
 
-// the prototype object has a constructor property that points to the class itself
-Foo2.prototype.hasOwnProperty('constructor')
-Foo === Foo.prototype.constructor
+// all class prototypes inherit from Object.prototype, directly or via class prototype inheritance
+Object.prototype.isPrototypeOf(Foo.prototype)
+Foo.prototype.isPrototypeOf(Bar.prototype)
 
-// the prototype has the 'prototypeMethod'
-Foo2.prototype.hasOwnProperty('prototypeMethod')
+// an inheritance inherits its class's prototype
+Foo.prototype.isPrototypeOf(foo)
+Bar.prototype.isPrototypeOf(bar)
+Foo.prototype.isPrototypeOf(bar)
 
-// the class has the static method
-Foo.hasOwnProperty('staticMethod')
-
-// Foo is the parent of Bar 
-Object.getPrototypeOf(Bar) === Foo
-
-// check instance parent
-foo instance of Foo
-bar instance of Foo
-Object.getPrototypeOf(foo) === Foo.prototype
-Object.getPrototypeOf(bar) === Bar.prototype
-
-// foo is not a function therefore doesn't have a prototype property
-foo.prototype === undefined
-
-// Foo's prototype is the parent of the Bar's prototype
-Object.getPrototypeOf(Bar.prototype) === Foo.prototype
+// all the way to the root
+Object.prototype.isPrototypeOf(bar)
 ```
+
+### 5.3. Inherited Properties 
+Given the above inheritance tree and the fact that a child inherits all properties of its parent, we have the following observation: 
+
+#### 5.3.1. Every Object Inherits from `Object.prototype` 
+Every object has the following properties generated from `Object.getOwnPropertyNames(Object.prototype)` 
+```js 
+[ '__defineGetter__',
+  '__defineSetter__',
+  'hasOwnProperty',
+  '__lookupGetter__',
+  '__lookupSetter__',
+  'propertyIsEnumerable',
+  'constructor',
+  'toString',
+  'toLocaleString',
+  'valueOf',
+  'isPrototypeOf',
+  '__proto__' ]
+``` 
+
+#### 5.3.2. Callable Entities Inherit from `Function.prototype` 
+They have the following properties generated from `Object.getOwnPropertyNames(Function.prototype)`.
+```js
+[ 'length',
+  'name',
+  'arguments',
+  'caller',
+  'apply',
+  'bind',
+  'call',
+  'toString',
+  'constructor' ]
+```
+It helps to explain that a callable entity (a function or a class) has `call`, `bind` and `apply` methods. 
+
+#### 5.3.3. Instance Inheritance 
+All instance inherits properties from the prototype of its class and the prototypes of ancestor classes till the root `Object.prototype`. 
+
+These properties are instance properties and methods. 
+
+#### 5.3.4. Class Inheritance
+Every class inherits static methods/properties from its parent and ancestor classes. 
+
+### 5.4. The `constructor` Hierarchy
+Every object inherits the `constructor` property from `Object.prototype`.  The `constructor` has a special meaning when determine the result of the `instanceof` operator. 
+
+Let "<=" represents the meaning of "is the constructor of" relationship, then we have:
+`Function` <= `Function`, i.e., `Function` is the constrctor of itself. 
+`Function` <= `Function.prototype`, `Function` is the constructor of its prototype. 
+`Function` <= `Object` <= `Object.prototype`
+`Function` <= `Foo` <= `Foo.prototype` || `foo`
+`Function` <= `Bar` <= `Bar.prototype` || `bar`
+
+### 5.5. `instanceof` and `typeof`
+The `instanceof` operator uses `constructor` to find its class, then use `[[prototype]]` to find all ancestor classes. An instance is an instance of its `constructor` and all ancestors of the `constrcutor` class. 
+
+As explained in this stackoverflow article http://stackoverflow.com/questions/899574/which-is-best-to-use-typeof-or-instanceof, use `typeof` for simple buildin types such as `string`, `true`, `99.99`, `{}`. It only reports top level types such as `object`, `number`, `boolean`, `string`, and `function`. A special thing is that `typeof(null) === 'object'`
+
+For complex types such as a class, use `instanceof`.  
