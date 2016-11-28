@@ -39,7 +39,7 @@ In ES6, use classes, not constructor functions, as constructor.
 
 ## 3. Use Function  
 ### 3.1. Traditional Function Definition
-```
+```js
 // Function expression:
 const foo = function (x) { ··· }
 
@@ -48,7 +48,7 @@ function foo (x) { ··· }
 ```
 
 ### 3.2. Method Definition
-```JavaScript
+```js
 // Method definitions can appear inside object literals
 const obj = {
     add(x, y) {
@@ -100,8 +100,9 @@ As an example, when a class `Foo` is defined, a special object `Foo.prototype` i
 ![Object Relationships](http://exploringjs.com/es6/images/classes----methods_150dpi.png)
 
 ### 5.1. Sample Inheritance Tree Code
-We use the following code to define a simple inheritance tree.  
-```JavaScript
+We use the following code to define a simple inheritance tree. 
+
+```js
 class Foo {
     constructor(prop) {
         this.prop = prop;
@@ -190,6 +191,7 @@ Every object has the following properties generated from `Object.getOwnPropertyN
 
 #### 5.3.2. Callable Entities Inherit from `Function.prototype` 
 They have the following properties generated from `Object.getOwnPropertyNames(Function.prototype)`.
+
 ```js
 [ 'length',
   'name',
