@@ -222,10 +222,15 @@ Every class inherits static methods/properties from its parent and ancestor clas
 Every object inherits the `constructor` property from `Object.prototype`.  The `constructor` has a special meaning when determine the result of the `instanceof` operator. 
 
 Let "<=" represents the meaning of "is the constructor of" relationship, then we have:
+
 `Function` <= `Function`, i.e., `Function` is the constrctor of itself. 
+
 `Function` <= `Function.prototype`, `Function` is the constructor of its prototype. 
+
 `Function` <= `Object` <= `Object.prototype`
+
 `Function` <= `Foo` <= `Foo.prototype` || `foo`
+
 `Function` <= `Bar` <= `Bar.prototype` || `bar`
 
 ### 5.5. `instanceof` and `typeof`
