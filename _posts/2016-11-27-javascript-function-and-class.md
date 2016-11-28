@@ -29,7 +29,8 @@ The `typeof(entity)` results of all the callable entities are `function`. Arrow 
 Prefer arrow functions as callable because of the lexical `this` and compact format. Use traditional function expression when the callback has multiple lines or uses an implicit `this`. 
 
 Avoid using IIFEs in ES6 by using a module or block with a `let` or `const` declaration. The only case to use IIFE is to produce a result via multiple statements and IIAF (immediately-invoked arrow function) can be use. In IIAF, the parentheses must be around arrow function. For example: 
-```JavaScript
+
+```js
 (() => {
     return 123
 })();  // the parantheses are around arrow function and the expression ended with a semicolon. 
