@@ -41,6 +41,7 @@ Avoid using IIFEs in ES6 by using a module or block with a `let` or `const` decl
 In ES6, use classes, not constructor functions, as constructor. 
 
 ## 3. Use Function  
+
 ### 3.1. Traditional Function Definition
 ```js
 // Function expression:
