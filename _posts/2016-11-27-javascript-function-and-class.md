@@ -11,7 +11,8 @@ tags:
 The ES6 `Function`, `Class` and object inheritance are things that confused me for a while. This article is a summary of my reading of [Exploring ES6](http://exploringjs.com/es6.html). 
 
 ## 2. Function Concept
-### 2.1. Function Roles
+
+### 2.1 Three Roles of Function
 A function is a callable entity in ES6 that play three roles. 
 
 1. Real (non-method) function
