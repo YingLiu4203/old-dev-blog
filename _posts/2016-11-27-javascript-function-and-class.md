@@ -234,8 +234,26 @@ Let "<=" represents the meaning of "is the constructor of" relationship, then we
 `Function` <= `Bar` <= `Bar.prototype` || `bar`
 
 ### 5.5. `instanceof` and `typeof`
-The `instanceof` operator uses `constructor` to find its class, then use `[[prototype]]` to find all ancestor classes. An instance is an instance of its `constructor` and all ancestors of the `constrcutor` class. 
+The `instanceof` operator uses `constructor` to find its class, then use `[[prototype]]` to find all ancestor classes. An instance is an instance of its `constructor` and all ancestors of the `constrcutor` class. For complex types such as a class, use `instanceof`.
 
-As explained in this stackoverflow article http://stackoverflow.com/questions/899574/which-is-best-to-use-typeof-or-instanceof, use `typeof` for simple buildin types such as `string`, `true`, `99.99`, `{}`. It only reports top level types such as `object`, `number`, `boolean`, `string`, and `function`. A special thing is that `typeof(null) === 'object'`
+`Function` and `Object` are instances of themselves and each other, i.e., the following statements are true:
 
-For complex types such as a class, use `instanceof`.  
+```js
+Function instanceof Object
+Object instanceof Function
+Object instanceof Object
+Function instanceof Function
+``` 
+
+As explained in this stackoverflow article http://stackoverflow.com/questions/899574/which-is-best-to-use-typeof-or-instanceof, use `typeof` for simple buildin types such as `string`, `true`, `99.99`, `{}`. It only reports top level types such as `object`, `number`, `boolean`, `string`, and `function`. 
+
+Special cases for `typeof` operator: 
+
+```js
+typeof(null) === 'object'
+typeof(Function) === 'function'
+typeof(Object) === 'function'
+typeof(Boolean) === 'function'
+typeof(undefined) === 'undefined'
+typeof(NaN) === 'number'
+```
