@@ -41,45 +41,75 @@ Additionally, Vue has a component system to support component composing.
 ### 2.1. The Vue Instance
 A Vue instance is a ViewModel (vm) as in MVVM pattern. It has options such as data, template, element to mount on, methods, lifecycle callbacks and more. 
 
-A Vue instance proxies all the properties found in its `data` object. It has some properties and methods. It has some hooks at different stage of the instance's life. For example, `beforeCreate`, `created`, `mount`, `beforeMount`, `mounted`, `beforeUpdated`, `updated`, `beforeDestroy` and `destroyed`. 
+A Vue instance proxies all the properties found in its `data` object. It has some properties and methods. It has some hooks at different stage of the instance's life. For example, `beforeCreate`, `created`, `beforeMount`, `mounted`, `beforeUpdated`, `updated`, `activated`, `beforeDestroy` and `destroyed`. 
 
 ### 2.2. Template Syntax
 
-**Interpolations**
-* {{ message }}: text rendering
-* {{js expression}}: JavaScript expression -- not statement 
-* {{ message | capitalize }}: filters
+#### 2.2.1. Interpolations
+The expression in a data binding can be a full-power JavaScript expression. Statements such as assignment or flow control are illegal. 
+* {{ message }}: text rendering.
+* {{js expression}}: JavaScript expression -- not statement.
+* {{ message | capitalize }}: filters only used in `v-bind` and mustache interpolations. 
 
-**Directives**
+Use a `v-text` directive or the "Mustache" syntax to bind data in text, for example, `<span>Message: {{ msg }}</span>`.  This bind the text to the `msg` property of the data object and will be updated whenever the `msg` property changes. 
+
+To rend the text only once and do not update on the following data changes, use `v-once` directive. For example, `<span v-once>This will never change: {{msg}}</span>`. 
+
+Use `v-bind` directive to dynamically bind one or more attributes, or a component prop to an expression. For example: `<img v-bind:src="imageSrc">`. The shorthand is `<img :src="imageSrc">`. 
+
+When used without an argument, it bind an object containing attribute name-value pairs. For example: `<div v-bind="{ id: someProp, 'other-attr': otherProp }"></div>`. 
+
+#### 2.2.2. Directives
 A directive is a special attribute that has a `v-` prefix. The directive attribute value shoud be a single JS expression. A directive can have arguments after a colon symbol, for example: `b-bind:href` or `v-on:click`. Modifiers are special postfix following a dot to modify the behavior. For example, `v-on:submit.prevent`. 
-* v-html: raw html
-* v-bind: one-way binding
-* v-if: conditional binding
+
+* v-html: raw html.
+* v-once: one-time interpolation. 
+* v-bind: one-way binding, a boolean attribute is removed if its value is falsy.
+* v-if: conditional binding, the node is removed if its value is falsy. 
 * v-for: loop binding
 * v-on: attaching event listner 
 * v-model: two-way 
 
+#### 2.2.3. Shorthands
 There are shorthands for `v-bind` and `v-on`. `v-bind:href` becomes `:href` and `v-on:click` becomes `@click`. 
 
 ### 2.3. Computed Properties and Watchers
 Compputed properties are calculated from other data properties. In template, it is used as a regular property. A computed property is cached and is only re-evaluated when any of its dependencies is changed.  By default, a computed property is getter-only, but it can have a setter. 
 
-When there is a need to perform an asynchromous or expensive operation, a `watch` option is a better choice than the computed properties. 
+The difference between a computed property and a method is that the computed property is cached based on its dependencies while a method is always run when a re-render happend. 
+
+In most cases, computed properties are more appropriate than watchers. When there is a need to perform an asynchronous or expensive operation, a `watch` option is a better choice than the computed properties. 
 
 ### 2.4. Class and Style Bindings
-When `b-bind:class="classObject"` is used, all properties of the `classObject` are bind to the class attribute. An array value such as `"[activeClass, errorClass]"` is fine too. 
+When `v-bind:class="classObject"` is used, all properties of the `classObject` are bind to the class attribute. Both the `:class="{ active: isActive, 'text-danger': hasError }"` and `:class="[activeClass, errorClass]"` are fine. 
 
-The same syntax can be used for inline styles. 
+The same syntax can be used for inline styles with the `v-bind:sytle` directive. 
 
 ### 2.5. Conditional and List Rendering
-
 Conditional: `v-if`, `v-else`, `v-show` (only toggles the `display` CSS). 
-List: `v-for` (with element/index, or value, key and index). It can be used in components. It is recommended to provide a key with v-for whenever possible. 
+
+List: `v-for` (with element/index, or value, key and index). It can be used in components. It is recommended to provide a key with `v-for` whenever possible. 
 
 Vue also defines array methods: `set()`, `push()`, `pop()`, `shift()`, `unshift()`, `splice()`, `sort()`, and `reverse()`.  There are non-mutation methods such as `filter()`, `concat()`, and `slice()`. Don't use `items[index] = value` because Vue cannot monitor the changes. 
 
-### 2.6. Form Input Bindings
-`v-model` uses the Vue instance data as the source of truth. It has some modifiers such as `lazy`, `number`, and `trim`.
+### 2.6. Event Handling
+The `v-on` attribute can directly bind to a meethod name or run some JavaScript. The original DOM event can be passed as a special `$event` parameter to a method call. 
+
+There are some event modifier for `v-on`. 
+* `.stop`: call `event.stopPropagation()` to prevents further propagation of the current event in the capturing and bubbling phases. 
+* `.prevent`: call `event.preventDefault()` to cancel the event without stoping furher propagation of the event. 
+* `.capture`: add event listener in capture mode. There are events which don’t bubble, but can be captured. For example, onfocus/onblur.
+* `.self`: only trigger handler if event was dispacthed from this element. 
+* `.{keyCode | keyAlias}`: only trigger handler on certain keys. Key aliases include `enter`, `tab`, `delete`, `esc`, `space`, `up`, `down`, `left`, `right`.  You can also define custom key modifier aliases via the global config.keyCodes object: `Vue.config.keyCodes.f1 = 112` defines a new alias `f1`. 
+* `.native`: listen for a native event on the root element of component.
+* `.{ctlr | alt | shift |meta}` trigger a mouse event only when the corresponding key is pressed. 
+
+### 2.7. Form Input Bindings
+`v-model` is used to create two-way data bindings on form input and textarea elements. It doesn't care about the inital DOM element input and always uses the Vue instance data as the source of truth. It has some modifiers such as 
+
+* `lazy`: sync after "change" instead of "input".
+* `number`: convert to a number.
+*  `trim`: trim input. 
 
 ## 3. Components
 ### 3.1. Register a Component
@@ -143,84 +173,25 @@ It's a good iead to use kebab-case (lowercase word separated by hyphen) to name 
 
 To cache static content, use `v-once` directive to evaluate it once and cache it. 
 
-## 4. Single File Component
-The `vue-loader` document is in https://vue-loader.vuejs.org/en/index.html. 
+## 4. The Vue Instance 
+A Vue app requires one and only one **root Vue instance** with the `Vue`  constructor function: `var vm = new Vue({  // options })`. 
 
-### 4.1. Introduction 
-Vue uses the so-called single-file component with `.vue` extension to manage components in a large project. A single-file component allows template, CommonJS module and component-scoped CSS. Preprocessors such as Babel, Pug, SCSS or whatever preporcessors can be used to help the server side preparation. 
+### 4.1. `el` and `template` 
+The `el` option, either a CSS selector string or an actual `HTMLElement`, provides the root instance an existing DOM element to mount on. If there is no `template` property in the root Vue instance, the selected element with existing content will be compiled and mounted. Because the content is available after the HTML is parsed and normalized, there are some restrictions in its syntax. It is recommended to use string templates from one of the following sources:
 
-Vue provides the `vue-loader` plugin to use Webpack to build module bundle. `vue-loader` has the following features:
-* ES2015 enabled by default
-* Allows other Webpack loaders for each part of a Vue component. 
-* Handle dependent static assets in `<style>` and `<template>` with Webpack loaders. 
-* Can simulate scoped CSS for each component. 
-* Supports component hot-reloading during development. 
+* `<script type="text/x-template">`
+* JavaScript inline template string
+* Vue components via `render: h => h(MyCompoent)`  
 
-### 4.2. Vue Component Spec 
-A `.vue` file uses HTML-like syntax to describe a Vue component. It has three top-levle blocks: `<template>`, `<script>`, and `<style>`.  `vue-loader` will parse the file, extract each language block, call other Webpack loaders if necessary, and finally build them into a CommonJS module whose `module.exports` is a Vue.js component options object.
+### 4.2. Components
+An app usually has many components (use "components" to mean Vue instances that are not the root instance). Components can be defined in a delcaritive way or use the `Vue.extend({ //extension options })` method. 
 
-Because `vue-loader` supports CommonJS `require` syntax and ES2015's `import` and `export` syntax. 
+Use `Vue.component(tagName, options)` to register a global component before the root Vue instance instantitation. To register a local component, use `components` instance option. The `data` property of a component must be a function because different components have different data instances. 
 
-You can use `src` attribute to split a `.vue` component into multiple files.     
+### 4.3. Data Option
+According to https://vuejs.org/v2/api/#data, the data option can be an object or a function. In a component definition, the value must be a funciton that returns the initial object. When an instance is created from the component defintion, the data function is called to return a fresh copy of an initial object. 
 
-### 4.3. Build Process
-There are several steps to do when building bundles
-* Lint
-* Unit Test and e2e test: Karma with specified browser and test framework
-* Minify
-
-## 5. Routing
-The `vue-router` document is in https://router.vuejs.org/en/index.html. 
-
-In HTML, using `<router-link>` and `<router-view>`. In JS, initialize a Vue instance with a `VueRouter`. 
-
-For dynamic route, use dynamic path segment `:parameter-name` and it is exposed as `$route.params.parameter-name`. To react to params changes, watch the `$route` object. 
-
-VueRouter uses [Path-to-RegEXp](https://github.com/pillarjs/path-to-regexp) as its path matching engine. 
-
-The `children` option in routers is used to support nested routes. 
-
-To navigate to a different URL, use `router.push(locatoin)`. `router.replace(location)` doesn't push a new history entry. `router.go(n)` goes forward or backward in the history stack. 
-
-A router and a view can have a name. Multiple views can be displayed at the same time in the `components` option in a route. 
-
-To redirect from one path to another, use `{ path: '/a', redirect: '/b' }` in the `routes` configuration.  Use `alias` to map a UI structure to an URL. 
-
-By default, VueRouter uses hash mode, set `mode: 'history'` to use history model. The history model should work with connect history fallback middleware in Node.js/Express. 
-
-## 6. State Management
-The document is in https://vuex.vuejs.org/en/index.html
-
-Vue offeres a Flux-like state management tool called `vuex`. The source of truth in Vue applications is the raw `data` object. However, a global object doesn't scale and is hard to trace. Therefore, the **store pattern** is used to manage states by event dispatching and notification. 
-
-The idea behind vuex is that we put shared steats into a global singleton (called a store) and any component can access the state for rendering or dispatch actions to mutate states. 
-
-### 6.1. State 
-Vuex uses a single state tree that can be splited into sub modules. In a component, use computed property to access states. 
-
-If a state belongs to a single component, it can be kept as a local state. 
-
-Vuex injects the global store into all child components using the `store` option in the root component. It is available as `this.$store` for all child components. To access multiple states in a component, use the `mapState` helper that generates computed getter functions. 
-
-Shared functions can be defined as getters in the store and is exposed as `store.getters` object. There is a `mapGetters` helper to share them as local computed propertes. 
-
-### 6.2. Mutations and Actions 
-The only way to mutate a state is by committing a mutation. A mutation has a string type and a handler. It might be helpful to use constants for mutation types. Mutations must be synchronous. There is a `mapMutations` helper to map store mutations to local methods. 
-
-Actions commit mutations and can contain arbitrary asynchronous operations. Action handlers receive a context object which exposese the same set of methods/properties on the store instance. Use `mapActions` to map component methods to `store.dispatch` calls. Actions can be composed by using promise or async/await. 
-
-### 6.3. Modules 
-The global store can be divided into modules. Each module has its own state, mutations, actions, getters and nested modules. Inside a module's mutations and getters, the first argument is its local state. 
-
-For large project, use namespace when name actions, mutations or getters. 
-
-Use `store.registerModule` method for dynamic module registration. 
-
-### 6.4. Form Handling
-There two methods to bind to a store states. 
-
-* Two-way Computed Property: use `v-model` and use `get()`, `set()` in a computed property.
-* Use `:value` and `@input` in binding. 
+The data object will be converted into a "reactive" one with its properties rewritten as getters/setters when an instance is created. The data object can be access as `vm.$data` and all its properties are proxied as vm propertie, therefore `vm.$data.myProp` is the same as `vm.myProp`. 
 
  
 

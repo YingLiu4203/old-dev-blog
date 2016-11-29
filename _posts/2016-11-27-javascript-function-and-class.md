@@ -219,6 +219,8 @@ They have the following properties generated from `Object.getOwnPropertyNames(Fu
 
 It helps to explain that a callable entity (a function or a class) has `call`, `bind` and `apply` methods. 
 
+Because all classes and functions have a `name` property, this can be used to find an object's class name via `obj.constructor.name`. 
+
 ### 6.3 Instance Inheritance 
 All instance inherits properties from the prototype of its class and the prototypes of ancestor classes till the root `Object.prototype`. 
 
