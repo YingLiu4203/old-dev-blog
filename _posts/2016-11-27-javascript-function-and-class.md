@@ -227,34 +227,32 @@ These properties are instance properties and methods.
 ### 6.4. Class Inheritance
 Every class inherits static methods/properties from its parent and ancestor classes. 
 
-## 7. The `constructor` Hierarchy
-Every object inherits the `constructor` property from `Object.prototype`.  The `constructor` has a special meaning when determine the result of the `instanceof` operator. 
+## 7. `instanceof` and `typeof`
 
-### 7.1. The `constructor` Hierarchy
-Let "<=" represents the meaning of "is the constructor of" relationship, then we have:
+### 7.1. The `instanceof` Algorithm
+The [instanceof algorithm](http://www.ecma-international.org/ecma-262/6.0/#sec-instanceofoperator) for the statement `objectOne instanceof objectTwo` is as the following:  
 
-`Function` <= `Function`, i.e., the `Function` is the constrctor of itself. 
+1. `objectTwo` is a callable entity
+2. `objectTwo.prototype` is an ancestor of `objectOne`. 
 
-`Function` <= `Function.prototype`, i.e., the `Function` is the constructor of its prototype. 
+Javascript throws `TypeError` if the right hand side (RHS) `objectTwo` is not a callable entity. The algorithm first gets the `objectTwo.prototype`, then check if whether it is an ancestor of `objectOne`. 
 
-`Function` <= `Object` <= `Object.prototype`
+Because an callable entity's `prototype` has a `constructor` pointing back to the callable entity, i.e., `objectTwo.prototype.constructor === objectTwo`, the second statement can be interpreted as: the `objectTwo` is the constructor of an ancestor of `objectOne`. 
 
-`Function` <= `Foo` <= `Foo.prototype` / `foo`
+In a normal case, `bar` is an instance of `Bar` because `Bar.prototype.isPrototypeOf(bar)` is true. `bar` is also an instance of `Foo` because of `Foo.prototype.isPrototypeOf(Bar.prototype)`. One level up, `bar` is an instance of `Object` because of `Object.prototype.isPrototypeOf(Foo.prototype)`. 
 
-`Function` <= `Bar` <= `Bar.prototype` / `bar`
+It's interesting to check the `Bar.prototype` object. It is NOT an instance of `Bar` because `Bar.prototype.isPrototypeOf(Bar.prototype)` is a false expression. However, it is an instance of `Foo`, a somehow surprising result. The reason is that `Foo.prototype.isPrototypeOf(Bar.prototype)` is true.  
 
-### 7.2. `instanceof` and `typeof`
-The `instanceof` operator uses `constructor` to find its class, then use `[[prototype]]` to find all ancestor classes. An instance is an instance of its `constructor` and all ancestors of the `constrcutor` class. For complex types such as a class, use `instanceof`.
-
-`Function` and `Object` are instances of themselves and each other, i.e., the following statements are true:
+There are special casses: `Function` and `Object` are instances of each other, i.e., the following statements are true.  
 
 ```js
-Function instanceof Object
-Object instanceof Function
-Object instanceof Object
 Function instanceof Function
+Object instanceof Function
+Function instanceof Object 
+Object instanceof Object
 ``` 
-### 7.3. The `typeof` Operator
+
+## 8. The `typeof` Operator
 As explained in this stackoverflow article http://stackoverflow.com/questions/899574/which-is-best-to-use-typeof-or-instanceof, use `typeof` for simple buildin types such as `string`, `true`, `99.99`, `{}`. It only reports top level types such as `object`, `number`, `boolean`, `string`, and `function`. 
 
 Special cases for `typeof` operator: 
@@ -272,3 +270,46 @@ typeof Boolean === 'function'
 typeof String === 'function'
 typeof (new String('abc'))  === 'object'
 ```
+
+## 9. The `constructor` Hierarchy
+Every object inherits the `constructor` property from `Object.prototype`.  The `constructor` has a special meaning when determine the result of the `instanceof` operator. 
+
+Let "<=" represents the meaning of "is the constructor of" relationship, then we have:
+
+`Function` <= `Function`, i.e., the `Function` is the constrctor of itself. 
+
+`Function` <= `Function.prototype`, i.e., the `Function` is the constructor of its prototype. 
+
+`Function` <= `Object` <= `Object.prototype`
+
+`Function` <= `Foo` <= `Foo.prototype` / `foo`
+
+`Function` <= `Bar` <= `Bar.prototype` / `bar`
+
+The `constructor` hierarchy helps to explain the "construction" of all callable entities including functions and classes.
+
+The following statement: 
+
+```js
+function myFunction() {}
+class myKlass {}
+``` 
+
+can be thought (might be wrong) as the following: 
+
+```js
+myFunction = new Function()
+myKlass = new Function()
+```
+
+It alo helps to explain that the following  expressions having a result of 'function'
+
+```js
+typeof Object
+typeof Function
+typeof Function.prototype
+typeof Foo
+typeof Bar
+```
+
+
