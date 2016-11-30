@@ -21,6 +21,7 @@ Categories form a simple tree structure because a category can only have one par
 
 ### 3. `ProductType` and  `AttributeDefiniation`
 A product type defines a `name` and a set of `attributes`. Because the `attributes` field is an array of product attributes, attributes can be changed, added or removed.  
+
 A product attribute is defined by an `AttributeDefinition` class. The following are some important fields:
 * `type`: an `AttributeType` value. All attribute types have a `name` field. 
     - Some attribute types (`boolean`, `text`, `ltext`, `number`, `money`, `date`, `time`, `datetime`) only have a `name` field. 

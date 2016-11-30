@@ -112,18 +112,26 @@ There are some event modifier for `v-on`.
 *  `trim`: trim input. 
 
 ## 3. Components
-### 3.1. Register a Component
-Components are custom elements that Vue attaches behavior to. They may be used as a native HTML elment with the special `is` attribute. To register a global component, use `Vue.component(tagName, options)`.  Tag names should be all-lowercase and contain a hyphen. Once registered, the custom elment can be used as `<tagName></tagName>`. 
+A Vue app requires one and only one **root Vue instance** with the `Vue`  constructor function: `var vm = new Vue({  // options })`. An app usually has many components (use "components" to mean Vue instances that are not the root instance). Components can be defined in a delcaritive way or use the `Vue.extend({ //extension options })` method. 
 
-Use `components` instance option to register a local component.
+### 3.1. Registration
+Components are custom elements that Vue attaches behavior to. They may be used as a native HTML elment with the special `is` attribute. To register a global component, use `Vue.component(tagName, options)`.  Tag names should be all-lowercase and contain a hyphen. Once registered, the custom elment can be used as `<tagName></tagName>`. Use `components` instance option to register a local component.
 
-### 3.2. Some Rules
-Because Vue templates are retrived after the browser parses Vue instance, you may need to use `is` attribute in some elments such as `<table>`, `<ul>`, `<select>` etc. 
+In root Vue instance, when use `el` option without `template`, the selected element with existing content will be compiled and mounted. Because the content is available after the HTML is parsed and normalized, there are some restrictions in its syntax. It is recommended to use string templates from one of the following sources without those restrictions:
 
-The `data` must be a function in a component. 
+* `<script type="text/x-template">`.
+* JavaScript inline template string.
+* `.vue` Components.  
+
+### 3.2. Component `data`
+According to https://vuejs.org/v2/api/#data, the data property of a Vue instance can be an object (ok for the root Vue instance) or a function. In a component definition, the value MUST be a funciton that returns the initial object. The component will ignore the data option if it is not a funciton. When an instance is created from the component defintion, the data function should return a fresh copy of an initial object. 
+
+The data object will be converted into a "reactive" one with its properties rewritten as getters/setters when an instance is created. The data object can be access as `vm.$data` and all its properties are proxied as vm propertie, therefore `vm.$data.myProp` is the same as `vm.myProp`. 
 
 ### 3.3. Composing Components
-In Vue, the parent-child component relationship is props down, event up.  A child component has props set by its parent. The prop type can be specified as one of the following type: `String`, `Number`, `Boolean`, `Function`, `Object`, and `Array`. 
+In Vue, the parent-child component relationship is props down, event up. Child should not mutate a prop passed down by its parent. If a child needs to mutate the data, use a computed property or amke a local copy. 
+
+The prop type can be specified as one of the following type: `String`, `Number`, `Boolean`, `Function`, `Object`, `Array` or a custom constructor function. For a custom constructor function, the assertion will be made with an `instanceof` check. 
 
 Every Vue instance implements an event interface that has two methods: 
 * Listen to an event using `$on(eventName)`
@@ -172,26 +180,6 @@ Vue.component(
 It's a good iead to use kebab-case (lowercase word separated by hyphen) to name a component. 
 
 To cache static content, use `v-once` directive to evaluate it once and cache it. 
-
-## 4. The Vue Instance 
-A Vue app requires one and only one **root Vue instance** with the `Vue`  constructor function: `var vm = new Vue({  // options })`. 
-
-### 4.1. `el` and `template` 
-The `el` option, either a CSS selector string or an actual `HTMLElement`, provides the root instance an existing DOM element to mount on. If there is no `template` property in the root Vue instance, the selected element with existing content will be compiled and mounted. Because the content is available after the HTML is parsed and normalized, there are some restrictions in its syntax. It is recommended to use string templates from one of the following sources:
-
-* `<script type="text/x-template">`
-* JavaScript inline template string
-* Vue components via `render: h => h(MyCompoent)`  
-
-### 4.2. Components
-An app usually has many components (use "components" to mean Vue instances that are not the root instance). Components can be defined in a delcaritive way or use the `Vue.extend({ //extension options })` method. 
-
-Use `Vue.component(tagName, options)` to register a global component before the root Vue instance instantitation. To register a local component, use `components` instance option. The `data` property of a component must be a function because different components have different data instances. 
-
-### 4.3. Data Option
-According to https://vuejs.org/v2/api/#data, the data option can be an object or a function. In a component definition, the value must be a funciton that returns the initial object. When an instance is created from the component defintion, the data function is called to return a fresh copy of an initial object. 
-
-The data object will be converted into a "reactive" one with its properties rewritten as getters/setters when an instance is created. The data object can be access as `vm.$data` and all its properties are proxied as vm propertie, therefore `vm.$data.myProp` is the same as `vm.myProp`. 
 
  
 
