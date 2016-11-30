@@ -131,56 +131,64 @@ The data object will be converted into a "reactive" one with its properties rewr
 ### 3.3. Composing Components
 In Vue, the parent-child component relationship is props down, event up. Child should not mutate a prop passed down by its parent. If a child needs to mutate the data, use a computed property or amke a local copy. 
 
-The prop type can be specified as one of the following type: `String`, `Number`, `Boolean`, `Function`, `Object`, `Array` or a custom constructor function. For a custom constructor function, the assertion will be made with an `instanceof` check. 
+A component has a `props` option. The prop type can be specified as one or more (yes, multiple types are possible) of the following type: `String`, `Number`, `Boolean`, `Function`, `Object`, `Array`， a custom constructor function or a validtor function. For a custom constructor function, the assertion will be made with an `instanceof` check. When assertion fails, Vue produces a warning message.
 
-Every Vue instance implements an event interface that has two methods: 
+To support custom events, every Vue instance implements an event interface that has two methods: 
 * Listen to an event using `$on(eventName)`
-* Trigger an event using `emit(eventName)`
-A parent component can listen to its child component using `v-on` directly in the template where the child component is used. use `.native` modifier to listen on native event on the root element of a component. 
+* Trigger an event using `$emit(eventName)`
+A parent component can listen to its child component using `v-on` directly in the template where the child component is used. use `.native` modifier to listen on only native event. 
 
 The `<input v-model="something">` is a syntactic sugar for `<input v-bind:value="something" v-on:input="something = $event.target.value">` in general and `<input v-bind:value="something" v-on:input="something = arguments[0]">` in a component. So for a component to use `v-model`, it must
 * accept a `value` prop
 * emit an `input` event with the new value. 
 
-For communications between two components without a parent-child relationship, you can use an empty Vue instance or a dedicated state-management pattern. The rule of component scope is 
+For communications between two components without a parent-child relationship, you can use an empty Vue instance or a dedicated state-management pattern. The rule of component complilation scope is 
 
-    Everything in the parent template is compiled in parent scope; everything in the child template is compiled in child scope.
+    Everything in the parent template is compiled in parent scope; everything in the child template is compiled in child scope. The parent’s template is not aware of the state of a child component.
 
-Vue uses the so-called **content distribution** to pass parent content to its child components. Parent content will be discarded unless the child component contains at least one `<slot>` outlet. The original content inside the `<slot>` tag is considered **fallback content**. A slot can have a `name` attribute to specify the place to insert content. 
+## 4. Content Distribution With Slots 
+It is a common requriment that a component has its own template but some contents are distributed by its parent component -- this process is called **content distribution**. Parent content will be discarded unless the child component contains at least one `<slot>` outlet. The original content inside the `<slot>` tag in a child component is considered **fallback content**. 
 
-To dynamic bind component, use the reserved `<component>` element and `is` attribute. For example: 
+A slot can have a `name` attribute to specify the place to insert content from the parent with a matching `slot` value.
+
+A scoped slot is a special type of slot that can pass data to the parent. The parent template uses `<template scope="tempName">` to read the child data using `tempName.attribute`. A typeical use case is to allow the parent to customize an item rendering in a list/table of the child. 
+
+## 5. Dynamic Components and `keep-alive`
+To dynamically mount a component, use the reserved `<component>` element and `is` attribute. For example: 
+
 ```xml
-<component v-bind:is="currentView">
-  <!-- component changes when vm.currentView changes! -->
-</component>
+<keep-alive>
+  <component v-bind:is="currentView">
+    <!-- component changes when vm.currentView changes! -->
+  </component>
+<keep-alive>
 ```
+
 The `currentView` is a prop in a Vue instance that points to a component name. 
 
-`<keep-alive>` element keeps swithed-out components in memory thus they can be reused. 
+The `<keep-alive>` element keeps swithed-out components in memory thus they can be reused. It can use `include` or `exclude` to conditonally cache components. 
 
-Props, events, and slots are used to make a component to be shared easily. The `ref` attribute can be used to get a reference to a child component. 
+## 6. Component API
+The API for a Vue components comes in three parts: 
+* Props: allow the external environement to pass data into the component. 
+* Events: allow the component to send event to the external environment.  
+* Slots: allow the external environment to compose the conponent with extra content. 
 
-In large applications, we may load a component from a server only when it's neeeded.  Vue allows you to define a component as a factory function that asynchronously resolves the component defintion, with the help from Webpack's code-splitting feature. Following are two examples: 
+The following code snippet showing the three ways a parent interacting with its child component:
 
-```JavaScript
-Vue.component('async-webpack-example', function (resolve) {
-  // This special require syntax will instruct Webpack to
-  // automatically split your built code into bundles which
-  // are loaded over Ajax requests.
-  require(['./my-async-component'], resolve)
-})
+```xml
+<my-component
+  :foo="baz"
+  :bar="qux"
+  @event-a="doThis"
+  @event-b="doThat"
+>
+  <img slot="icon" src="...">
+  <p slot="main-text">Hello!</p>
+</my-component>
+``` 
 
-// webpack 2 + promise
-Vue.component(
-  'async-webpack-example',
-  () => System.import('./my-async-component')
-)
-```  
+The `ref="childId"` attribute can be used to identify a child component. The parent can get a reference to a child component using `parent.refs.childId`. 
 
-It's a good iead to use kebab-case (lowercase word separated by hyphen) to name a component. 
-
-To cache static content, use `v-once` directive to evaluate it once and cache it. 
-
- 
-
-
+## 7. Async Components
+In large applications, we may load a component from a server only when it's neeeded.  Vue allows you to define a component as a factory function that asynchronously resolves the component defintion, with the help from Webpack's code-splitting feature. 
