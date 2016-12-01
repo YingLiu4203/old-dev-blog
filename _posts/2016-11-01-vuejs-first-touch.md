@@ -44,6 +44,7 @@ A Vue instance is a ViewModel (vm) as in MVVM pattern. It has options such as da
 A Vue instance proxies all the properties found in its `data` object. It has some properties and methods. It has some hooks at different stage of the instance's life. For example, `beforeCreate`, `created`, `beforeMount`, `mounted`, `beforeUpdated`, `updated`, `activated`, `beforeDestroy` and `destroyed`. 
 
 ### 2.2. Template Syntax
+Components must contain exactly one root node. 
 
 #### 2.2.1. Interpolations
 The expression in a data binding can be a full-power JavaScript expression. Statements such as assignment or flow control are illegal. 

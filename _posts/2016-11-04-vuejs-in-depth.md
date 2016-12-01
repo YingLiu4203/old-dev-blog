@@ -11,7 +11,7 @@ tags:
 The `vue-loader` document is in https://vue-loader.vuejs.org/en/index.html. 
 
 ### 1.1. Introduction 
-Vue uses the so-called single-file component with `.vue` extension to manage components in a large project. A single-file component allows template, CommonJS module and component-scoped CSS. Preprocessors such as Babel, Pug, SCSS or whatever preporcessors can be used to help the server side preparation. 
+Vue uses the so-called single-file component with `.vue` extension to manage components in a large project. A single-file component allows template, CommonJS module and component-scoped CSS. Preprocessors such as Babel, Pug, SCSS or many others can be used to help the server side preparation. 
 
 Vue provides the `vue-loader` plugin to use Webpack to build module bundle. `vue-loader` has the following features:
 * ES2015 enabled by default
@@ -85,3 +85,32 @@ There two methods to bind to a store states.
 
 * Two-way Computed Property: use `v-model` and use `get()`, `set()` in a computed property.
 * Use `:value` and `@input` in binding. 
+
+## 5. Render Function 
+Use render function dynamically generate HTML content. `this.$slots` and `createElement` are used to create a template that has the following fields: `class` for `v-bind:class`, `style` for `v-bind:style`, `attrs` for HTML attributes, `props` for component properties, `domProps` for DOM properties, `on` for event handler, `nativeOn` for native event handler, `directives` for custom directives, `scopedSlots` for scoped slots, `slot` for slot name, `key` for top-level `key` attribute and `ref` for reference id. 
+
+All VNodes in a component tree must be unique --i.e., not refer to the same object.   
+
+Often it is easy to use JSX to rend a template. Vue has a Babel plugin to transform JSX code. 
+
+If a component has no data and instanceless (no `this` context), it can be marked as `functional`. Everything the component needs is passed throuth `context` that has the following fields: `props`, `children`, `slots`, `data`, and `parent`. 
+
+## 6. Mixins and Plugins
+
+### 6.1. Mixins 
+Mixins are objects that can be "mixed" into a component's own options. It is a tool to distribute reusable functionalitis for Vue components. 
+
+When a mixin and the component itself contain overlapping options, those options will be merged with configured (by `Vue.config.optioinMergeStrategies`) strategies. Usally the mixin's methods called before the component's own hooks and the component's options will take priority when there are conflicting keys. 
+
+Use `Vue.mixin` to apply global minxins. Be careful because it affects every single Vue instance created -- including third party components. 
+
+### 6.2. Plugins
+Plugins add global-level functionality to Vue. There are typically five types of plugins: 
+
+1. Add global methods or properties. 
+2. Add global assets: directive/filters/transitions etc.
+3. Add some component options by a global mixin. e.g. `vuex`. 
+4. Add Vue instance methods by attaching them to `Vue.prototype`. 
+5. Add multiple features and has its own API. e.g. `vue-route`. 
+
+A plugin exposes an `install(Vue, options)` method that add extra functions.  Use `Vue.use(myPlugin, {...options})` to install a mixin. 
