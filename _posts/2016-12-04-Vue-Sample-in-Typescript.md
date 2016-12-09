@@ -9,7 +9,7 @@ tags:
 
 ase on the the [Jayway's Vue.js 2.0 workshop](https://jayway.github.io/vue-js-workshop/), this document describes the steps to scaffold a TypeScript Vue project and add more components to create a structure for non-trivial projects.
 
-The source code repository is https://github.com/YingLiu4203/TypeScript-Vue-Example. The following are step-by-step instructions to create the project from scracth.
+The completed code is in [a github repository](https://github.com/YingLiu4203/TypeScript-Vue-Example). The following are step-by-step instructions to create the project from scracth.
 
 ## 1. Scaffold a Project 
 Run `npm install -g vue-cli` to install vue-client. If you already have it, run `npm update -g vue-cli` to update it to the latest version. You may need to use `sudo` to install it as a global package. 
