@@ -101,12 +101,91 @@ Use `type` to define a type alias. String lieteral types allows you to specify t
 `for..of` statement returns a list of values of the numeric properties of the object being iterated. `for..in` returns a list of keys on the object being iterated. `for..in` operates on any object and can inspect properties on the object. 
 
 ## 7. Modules
-Any file containing a top-level `import` or `export` is considered a module. 
+Any file containing a top-level `import` or `export` is considered a module. Moduels are executed within their own scope and everything within them is local unless it is explicitly exported. To use a variable, funciton, class, interface, etc. exported from a different module, it has to be imported using one of the `import` forms. 
 
-To describe the shape of libraries not written in TypeScript, we need to `declare` their exposed API. If we don't write out declarations, we can import them as the `any` type. 
+Use `--module` to sepcify a module target for TypeScript to generate appropriate code for a specific module-loading system. When compiled, each module will become a separate `.js` file. 
 
-## 8. Consumption of Declaration Files
-Since TypeScript 2.0, it's easy to download and consume declaration files. If a library has declaration file built-in, for example Vue, just run  `npm install-S vue`. If a library doesn't have built-in declaration file, for example, lodash, install its type by `npm install -S @types/lodash`.  
+### 7.1. Export 
+Following are examples the `export` usage. 
+
+```ts
+// Addding the `export` keyword to export any declaration. 
+export const PI = 3.14
+export interface X {...}
+export class Y implements X {...}
+
+// default export class and function declaration names are optional
+export default function (s: string) {...}
+
+// Use `export` to export the name of delcared types or rename it. 
+export { PI }
+export {X, Y as YY}
+
+// the following two are the same
+export default PI
+export {PI as default}
+
+// Use `export` to re-exports types. 
+export { Z, Z2 as ZZ} from "mod-z"
+export * from "mod-zz"
+```
+
+### 7.2. Import 
+There are several forms of `import`: 
+
+```ts
+// import individual things from a module 
+import {X, Y as AltY} from "xy"
+
+// import entire module into a single variable
+import * as XZ from "xy"
+
+// import default 
+import $ from 'JQuery'
+```
+
+### 7.3. `export =` and `import = require()`
+Both CommonJS and ADM have an `exports` object that contains all exports from a module. TypeScript supports `export =` and `import = required('module')` to model the traditional CommonJS and AMD workflow. They can be replaced with defaul exports.  
+
+### 7.4. Working with Other JavaScript libraries
+To describe the shape of libraries not written in TypeScript, we need to `declare` their exposed API. Declarations that don't define an implementation are called "ambient". If we don't write out declarations, we can import them as the `any` type. 
+
+### 7.5. Guidance for Structuring Modules
+
+Export as close to top-level as possible. 
+
+If only export a single class or funciton, use `export default`. 
+
+Explicitly list imported names. 
+
+Use the namespace import pattern if many things are imported. 
+
+Re-export to extend. 
+
+Do not use namesacpes in modules becuase modules are organized using filesystem already. 
+
+Compared with namespaces, modules declare their dependencies and depend on a module loader. Because it's part of the standard ES6 sytax, use module, not namespace.  
+
+### 7.6. Module Resolution
+For a statement like `import { a } from 'moduleA'`, the compiler needs to resolve `moduleA`. First, it tries to locate a file that represents the imported module. If that doesn't work and if the module name is non-relatvie, then the compiler will attempt to locate an ambient module declaration. If it fails to resolve the module, it will log an error like "error TS2307: Cannot find module 'moduleA'". 
+
+A relative import is one that starts with `/`, `./` or `../`. A relative is resolved relative to the importing file and cannot resolve to an ambient moudle declaration. A non-relative import can be resolved relative to `baseUrl`, through path mapping, or ambient module declarations. Use non-relative paths when important exteranl dependencies.  
+
+There are two possible module resolution strategies: `Node` and `Classic`. It can be specified using the `--moduleResolution` flag. If not specified, the default is `Classic` for `--module AMD | System | ES2015` or `Node` otherwise. The `Classic` is mostely used for back compatibility. Therefore only `Node` strategy is discribed here. 
+
+For relative path `./moduleB`, the compiler locates files named `moduleB.[ts|tsx|.d.ts]`, or `package.json` with a `typings` property, or `index.[ts|tsx|.d.ts]`.  
+
+For non-relative path `moduleB`, it will find those files in `node_modules` folder in the current folder and all ancestor folders till the root folder. 
+
+TypeScript has a set of flags to inform the compiler to resolve modules. 
+
+* `baseUrl`: all non-relative names are assumed to be relative to the `baseUrl`.
+* `paths`: map a non-ralative name to a  path under `baseUrl`. There are can be multiple paths and `*` matches all names. 
+* `rootDirs`: it is a list of roots whose contents are expected to merge at run-time. For TypeScript, the files in those folders are in the same folder. 
+
+
+## 8. Declaration Files
+Since TypeScript 2.0, it's easy to download and consume declaration files. If a library has declaration file built-in, for example Vue, just run  `npm install -S vue`. If a library doesn't have built-in declaration file, for example, lodash, install its type by `npm install -S @types/lodash`.  
 
 To consume a library, just `import` it or if it is a global module, just use it. 
 
