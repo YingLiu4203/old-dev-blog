@@ -7,109 +7,108 @@ tags:
 - TypeScript
 ---
 
-Base on the [Vue2 + TypeScript2 -- an introductory guide](https://herringtondarkholme.github.io/2016/10/03/vue2-ts2/) and [Jayway's Vue.js 2.0 workshop](https://jayway.github.io/vue-js-workshop/) and , this document descripts the steps to scaffold a TypeScript Vue project and add more components to create a structure for non-trivial projects. 
+ase on the the [Jayway's Vue.js 2.0 workshop](https://jayway.github.io/vue-js-workshop/), this document describes the steps to scaffold a TypeScript Vue project and add more components to create a structure for non-trivial projects.
 
 The source code repository is https://github.com/YingLiu4203/TypeScript-Vue-Example. The following are step-by-step instructions to create the project from scracth.
 
 ## 1. Scaffold a Project 
 Run `npm install -g vue-cli` to install vue-client. If you already have it, run `npm update -g vue-cli` to update it to the latest version. You may need to use `sudo` to install it as a global package. 
 
-Run `vue init webpack my-project` to create a new project named `my-project`. To make it simple, don't setup ESLint, unit test and e2e tests. 
+### 1.1. Initialize a Vue Project
 
-### 1.1. Use TypeScript Instead of Babel
-We use TypeScript go generate all JavaScript ES5 code, therefore there is no need to to use Bable in this project. In `package.json`, remove all lines having a "babel" prefix. 
+Run `vue init webpack typescript-vue-example` to create a new project named `typescript-vue-example`. To make it simple, don't setup ESLint, unit test and e2e tests. 
 
-Then install `typescript` and `vue-ts-loader` packages. Here we use `typescript@rc` for TypeScript 2.1 Release Candidate.  ``vue-ts-loader` works with `vue-loader` to process TypeScript code in a `vue` file. 
+Run the following commandto see it is up and running at http://localhost:8080/, type `ctrl-C` to exit. 
 
 ```sh
-npm i -D typescript@rc
-npm i -D vue-ts-loader
-npm i
+cd typescript-vue-example
+npm install
+npm run dev
 ```
 
-### 1.2. Config Webpack Loaders
-To use the `typescript` and `vue-ts-loader`, we need to configure both TypeScript and Webpack.
+### 1.2. Use TypeScript Instead of Babel
+We use TypeScript go generate all JavaScript ES5 code, therefore there is no need to to use Bable in this project. In `package.json`, remove all lines having a "babel" prefix. 
 
-### 1.2.1. Config TypeScript
+Then install `typescript` and `ts-loader` packages. `ts-loader` works with `vue-loader` (installed by `vue-cli` in project intialization) to process TypeScript code in a `vue` file. 
+
+```sh
+npm i -D typescript
+npm i -D ts-loader
+```
+
+### 1.3. Config Webpack Loaders
+To use the `typescript` and `ts-loader`, we need to configure both TypeScript and Webpack.
+
+### 1.3.1. Config TypeScript
 Create a `tsconfig.json` file in the project root folder with the following contents: 
 
 ```json
 {
   "compilerOptions": {
-    "module": "commonjs",
     "target": "es5",
-    "lib": ["es5", "es2015.promise"]
+    "lib": ["es5", "es2015.promise", "dom"]
   }
 }
 ```
 
 In the above file, we set the generate JavaScript code in `es5` syntax. We also need the `es5` and `es2015.promise` libs to compile TypeScript code. 
 
-### 1.2.2. Config Webpack
+### 1.3.2. Config Webpack
 Edit `build/webpack.base.conf.js` to have the following changes:   
 
 ```js
-// 1. adding this in the top because we use merge later
-var merge = require('webpack-merge')
-
-// 2. change the entry to a .ts file
+// 1. change the entry to a .ts file
 entry: {
   app: './src/main.ts'
 },
 
-// 3. add resolve extensions for '.ts'
+// 2. add resolve extensions for '.ts'
 resolve: {
     extensions: ['', '.js', '.vue', '.ts'],
     // ...
 }
 
-// 4. in "module: { loaders: []", change the js and bable loader to ts and vue-ts 
+// 3. in "module: { loaders: []", replace the "bable loader for js test" to "ts-loader for ts test" 
       {
         test: /\.ts$/,
-        loader: 'vue-ts',
+        loader: 'ts',
         include: projectRoot,
         exclude: /node_modules/
       },
 
-// 5. in "vue: {", add js loader and set esModule 
-vue: {
-    loaders: merge(utils.cssLoaders({ sourceMap: useCssSourceMap }),
-      { js: 'vue-ts-loader' }),
-    // typescript use esModule
-    esModule: true,
+// 4. in "vue: {", set esModule to true,
+  vue: {
+      loaders: utils.cssLoaders({ sourceMap: useCssSourceMap }),
+      // typescript needs it
+      esModule: true,
+      
       // ... 
-}
+  },
+
+// 5. append a ".ts" file to all ".vue" file thus typescript can preprocess the file
+  ts: {
+    appendTsSuffixTo: [/\.vue$/]
+  }
 ```
 
 ## 2. Convert JavaScript Code to TypeScript 
 The good news is that Vue npm package comes with type definitions and we can have type checking and editing help. However, the import syntax is different in TypeScript. 
 
-### 2.1. Change Entry File
-Rename the file `src/main.js` as `src/main.ts` and edit it to have the following content: 
+First, Change the `<script>` tag in `src/App.vue` and `src/components/Hello.vue` as `<script lang="ts">` for the `ts-loader` to work. 
+
+Then rename the entry file `src/main.js` as `src/main.ts` and edit it to have the following content: 
 
 ```ts
-declare let require: any
+import * as Vue from 'vue'
+import App from './App'
 
-import Vue = require('vue')
-let App = require('./App.vue').default
+/* eslint-disable no-new */
 new Vue({
   el: '#app',
   render: h => h(App)
 })
 ```
 
-### 2.2. Change the Root Component
-Edit the `./App.vue` to change its `import` statement as the following: 
-
-```ts
-// replace import ProductList from './components/ProductList' 
-// with the following statements 
-declare let require: any
-
-let Hello = require('./components/Hello').default
-```
-
-### 2.3. Run the Project
 To verify the changes, run the project with command `npm run dev`. You should see a page served on `http://localhost:8080/` if we make the right changes. 
 
 ## 3. Create a Product List Component
@@ -136,7 +135,13 @@ Delete the `src/components/Hello.vue` file and create a `src/components/ProductL
     </tbody>
   </table>
 </template>
+
+<script lang="ts">
+export default {}
+</script>
 ```
+
+In the above `ProductList.vue` file, though we don't have anything for for the `<script>` section, for TypeScript to work, we let it export an empty object. 
 
 Then change the `App.vue` as the following to use the new product list component.
 
@@ -145,10 +150,8 @@ Then change the `App.vue` as the following to use the new product list component
   <product-list></product-list>
 </template>
 
-<script>
-declare let require: any
-
-let ProductList = require('./components/ProductList').default
+<script lang="ts">
+import ProductList from './components/ProductList'
 
 export default {
   name: 'app',
@@ -176,6 +179,7 @@ npm i -D sass-loader
 
 ### 4.3. Create a Style File with Standard Style
 create a `src/styles` folder and create a `style.scss` file with the following content: 
+
 ```
 @import "../../node_modules/bootstrap/scss/bootstrap-flex.scss";
 ```
@@ -191,16 +195,21 @@ import './styles/style.scss'
 Run `npm run dev` to check that the site is up and running correctly. 
 
 ## 5. Create a State Store
-Run `npm i -S vuex` to install the Vue state store plugin. To make the project scalable, We use modules to manage the store for different parts of an application. In the `src/store` folder, we define types for all store modules. Each module has a type file. 
+To make the project scalable, We use modules to manage the store for different parts of an application. In the `src/store` folder, we define types for all store modules. Each module has a type file. 
 
-## 5.1. Create Type Constants
+### 5.1. Install `vuex`
+Run `npm i -S vuex` to install the Vue state store plugin.
+
+### 5.3. Create Type Constants
 Create `src/store/products-types.ts` file as the following:
 
 ```js
 export const GET_PRODUCTS = 'products/GET_PRODUCTS'
 ```
 
-## 5.2. Create the `getProducts` Getter
+The reason that we create this file is that there will be a types file for each store module. 
+
+## 5.3. Create the `getProducts` Getter
 Create `src/store/modules/products/getters.ts` as the following:
 
 ```ts
@@ -213,7 +222,9 @@ export const getters = {
 }
 ```
 
-## 5.3 Create the Products Store Module
+For a non-trivial project, there will be getters, mutations, and actions and each type will be in one or more file. 
+
+### 5.4 Create the Products Store Module
 Create `src/store/modules/products/index.ts` with the following content: 
 
 ```ts
@@ -244,21 +255,22 @@ const initialState = {
 
 export default {
   state: {
-    products: initialState.products
+    ...initialState
   },
   getters
 }
 ```
 
-### 5.4. Create the Store with the Products Store Module
-Create `src/store/index.ts` as following: 
+This is the module-levle store file that exposes all module states and methods.
+ 
+### 5.5. Add the Store to the Root Instance
+In `src/main.ts`, import the newly created store and add it to the root instance option. After this, all child components can access the store. 
 
 ```ts
-declare let require: any
 declare let process: any
 
-import Vue = require('vue')
-import Vuex = require('vuex')
+import * as Vue from 'vue'
+import * as Vuex from 'vuex'
 
 import products from './modules/products'
 
@@ -273,32 +285,15 @@ export default new Vuex.Store({
   strict: debug
 })
 ```
- 
-### 5.5. Add the Store to the Root Instance
-In `src/main.ts`, import the newly created store and add it to the root instance option. After this, all child components can access the store. 
 
-```ts
-declare let require: any
-
-import './styles/style.scss'
-
-import Vue = require('vue')
-let App = require('./App.vue').default
-import store from './store'
-
-new Vue({
-  el: '#app',
-  store,
-  render: h => h(App)
-})
-```
+This is the root-level store file that exposes all store modules. 
 
 ### 5.6. Use the Store in ProductList Component
-Create a `<script> </script>` and add the following content `src/components/ProductList.vue` to get products data from the store using a computed property. 
+to get products data from the store using a computed property,  change the content of `<script lang="ts"> </script>` of the `src/components/ProductList.vue` fiel as  the following: 
 
 ```ts
-declare let require: any
-import Vuex = require('vuex')
+<script lang="ts">
+import * as Vuex from 'vuex'
 
 import * as types from '../store/products-types'
 
@@ -307,6 +302,7 @@ export default {
     products: types.GET_PRODUCTS
   })
 }
+</script>
 ```
 
 In the above code, we map the `types.GET_PRODUCTS` getter meethod to a local computed property with a name `products`.  
