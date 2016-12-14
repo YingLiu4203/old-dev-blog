@@ -7,7 +7,9 @@ tags:
 - TypeScript
 ---
 
-This follows the 
+This follows the [Github TypeScript-Vue-Example](https://github.com/YingLiu4203/TypeScript-Vue-Example) to demostrate REST API usage of [Axios](https://github.com/mzabriskie/axios). 
+
+After clone the [TypeScript-Vue-Example](https://github.com/YingLiu4203/TypeScript-Vue-Example) repository, follow the below instructions to setup and run a REST API demo. 
 
 ## 1. Create REST Server API
 First, create `/server/src/product-data.js` with the following code -- this is the server side code that still use JavaScript
