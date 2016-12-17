@@ -127,31 +127,91 @@ Unlike JavaScript where every parameter is optional, in TypeScript, every parame
 
 A rest parameter is an array and is treated as optional.  
 
-A fucntion can have a fake `this` as the first parameter and can have a type such as `void`, `any` or `MyClass`.  The `void` means that a funciton doesn't require a `this` type. When annotate caller and callbacks with `this`, TypeScript can find incorrect callback usages.  A special case is using `this` in arrow function to access the lexical data.  
+A fucntion can have a fake `this` as the first parameter and can have a type such as `void`, `any` or `MyClass`.  The `void` means that a function doesn't require a `this` type. When annotate caller and callbacks with `this`, TypeScript can find incorrect callback usages.  A special case is using `this` in arrow function to access the lexical data.  
 
 For a function to take different parameter types and return different types, use function overloads. The function definition without parameter types and an `any` return type is not part of the overload list.  
 
-## 6. Type Inference and Compatibility
-When no type is given in a variable declaration, TypeScript infers the type. When it fails, it give a type of an empty object type: `{}`. 
+## 6. Generics
+A generic function can take one of the two forms: arrow syntax or object literal. In interface defintion, you can define a generic function or a non-generic function inside a generic type. Where to put the type parameter is determined by the interface intention.  
 
-TypeScript also has "contextual typing": type information is inferred from the location. 
+```ts
+let myIdentity: <T>(arg: T) => T  // arrow syntax
+let myIdentity: {<T>(arg: T): T}  // object literal
 
-Type compatibiity is based on structural subtyping (also called duck typing). X is compatible with Y if Y has at least the same members as X. For functions, TypeScript checks both parameters and the return type. 
+// interface defintion uses the object literal form
+interface GenericIdentityFn {
+    <T>(arg: T): T;
+}
 
-TypeScript supports intersection tyeps as `T & U` and union types as `T | U`. When checking a parameter of a union types, use `instanceof`, `typeof` , type assertion or "type guard". To define a type guard, use a `type predicate` that takes the form of `parameterName is Type`.  
+// the type can be defined at interface declaration
+interface GenericIdentityFn<T> {
+    (arg: T): T;
+}
+```
 
-Use `type` to define a type alias. String lieteral types allows you to specify the exact value a string must have. TypeScript has advance type features such as discriminated unions and `this` type. 
+Generic classes are only generic over their instance side. Static members can not use the class's type parameter. 
 
-## 7. Iterator
+You can use `extends` to denote constraint. 
 
-`for..of` statement returns a list of values of the numeric properties of the object being iterated. `for..in` returns a list of keys on the object being iterated. `for..in` operates on any object and can inspect properties on the object. 
+To use class type (the type itself) in generics, it is often necessary to refer their constructor functions and prototypes like `c: {new(): T; }`
 
-## 8. Modules
-Any file containing a top-level `import` or `export` is considered a module. Moduels are executed within their own scope and everything within them is local unless it is explicitly exported. To use a variable, funciton, class, interface, etc. exported from a different module, it has to be imported using one of the `import` forms. 
+## 7. Type Inference and Compatibility
+When no type is given in a variable declaration, TypeScript infers the type by calculating a "best common type" or "contextual type". When it fails, it give a type of an empty object type: `{}`. 
+
+Type compatibility is based on structural subtyping (also called duck typing). X is compatible with Y if Y has at least the same members as X. This rules applies to assignment and function call arguments. 
+
+For functions, TypeScript checks both parameters and the return type. For a function x to be assignable to a function y, each parameter in x must have a corresponding parameter in y with a compabile type and x's return type must be a supertype of y. 
+
+TypeScript supports intersection tyeps as `T & U` and union types as `T | U`. When checking a parameter of a union types, use `instanceof`, `typeof` (for primitive types `number`, `string`, `boolean`, or `symbol`) , type assertion or "type guard". 
+
+To define a type guard, use a `type predicate` that takes the form of `parameterName is Type`. For a union of two types, TypeScript can infer the other type automatically.   
+
+Use `type` to define a new name, a type alias for a type. A type alias can refer to itself in a property. A type alias cannot be extended or implemented from. 
+
+String lieteral types allows you to specify the exact value a string must have. TypeScript has advance type features such as discriminated unions. 
+
+A polymorphic `this` type represents a type that is the _subtype_ of the containing class or interface. This is called F-bounded polymorphism. It allows subtype to use the actaul `this` type. 
+
+For any type `T`, `keyof T` is the union of known, public property names of `T`. An example usage is as the following: 
+
+```ts
+function getProperty<T, K extends keyof T>(o: T, name: K): T[K] {
+    return o[name]; // o[name] is of type T[K]
+}
+```
+
+TypeScript standard library introduces four new generic types: 
+
+```ts
+// make T's properties nullable
+type Nullable<T> = { [P in keyof T]: T[P] | null }
+
+// make T's properties optional
+type Partial<T> = { [P in keyof T]?: T[P] }
+
+// pick some T's properties 
+type Pick<T, K extends keyof T> = {
+    [P in K]: T[P];
+}
+
+// a record of many T values indexed by strings or numbers
+type Record<K extends string | number, T> = {
+    [P in K]: T;
+}
+```
+
+## 8. Iterator
+
+`for..of` statement returns a list of values over an iterated object. When targeting ES5 or ES3, only `Array` type is allowed.  
+
+`for..in` returns a list of **keys** on the object being iterated. `for..in` operates on any object and can inspect properties on the object. 
+
+## 9. Modules
+Any file containing a top-level `import` or `export` is considered a module. Moduels are executed within their own scope and everything within them is local unless it is explicitly exported. To use a variable, function, class, interface, etc. exported from a different module, it has to be imported using one of the `import` forms. 
 
 Use `--module` to sepcify a module target for TypeScript to generate appropriate code for a specific module-loading system. When compiled, each module will become a separate `.js` file. 
 
-### 8.1. Export 
+### 9.1. Export 
 Following are examples the `export` usage. 
 
 ```ts
@@ -176,7 +236,7 @@ export { Z, Z2 as ZZ} from "mod-z"
 export * from "mod-zz"
 ```
 
-### 8.2. Import 
+### 9.2. Import 
 There are several forms of `import`: 
 
 ```ts
@@ -190,17 +250,17 @@ import * as XZ from "xy"
 import $ from 'JQuery'
 ```
 
-### 8.3. `export =` and `import = require()`
+### 9.3. `export =` and `import = require()`
 Both CommonJS and ADM have an `exports` object that contains all exports from a module. TypeScript supports `export =` and `import = required('module')` to model the traditional CommonJS and AMD workflow. They can be replaced with defaul exports.  
 
-### 8.4. Working with Other JavaScript libraries
+### 9.4. Working with Other JavaScript libraries
 To describe the shape of libraries not written in TypeScript, we need to `declare` their exposed API. Declarations that don't define an implementation are called "ambient". If we don't write out declarations, we can import them as the `any` type. 
 
-### 8.5. Guidance for Structuring Modules
+### 9.5. Guidance for Structuring Modules
 
 Export as close to top-level as possible. 
 
-If only export a single class or funciton, use `export default`. 
+If only export a single class or function, use `export default`. 
 
 Explicitly list imported names. 
 
@@ -212,7 +272,7 @@ Do not use namesacpes in modules becuase modules are organized using filesystem 
 
 Compared with namespaces, modules declare their dependencies and depend on a module loader. Because it's part of the standard ES6 sytax, use module, not namespace.  
 
-### 8.6. Module Resolution
+### 9.6. Module Resolution
 For a statement like `import { a } from 'moduleA'`, the compiler needs to resolve `moduleA`. First, it tries to locate a file that represents the imported module. If that doesn't work and if the module name is non-relatvie, then the compiler will attempt to locate an ambient module declaration. If it fails to resolve the module, it will log an error like "error TS2307: Cannot find module 'moduleA'". 
 
 A relative import is one that starts with `/`, `./` or `../`. A relative is resolved relative to the importing file and cannot resolve to an ambient moudle declaration. A non-relative import can be resolved relative to `baseUrl`, through path mapping, or ambient module declarations. Use non-relative paths when important exteranl dependencies.  
@@ -230,12 +290,12 @@ TypeScript has a set of flags to inform the compiler to resolve modules.
 * `rootDirs`: it is a list of roots whose contents are expected to merge at run-time. For TypeScript, the files in those folders are in the same folder. 
 
 
-## 9. Declaration Files
+## 10. Declaration Files
 Since TypeScript 2.0, it's easy to download and consume declaration files. If a library has declaration file built-in, for example Vue, just run  `npm install -S vue`. If a library doesn't have built-in declaration file, for example, lodash, install its type by `npm install -S @types/lodash`.  
 
 To consume a library, just `import` it or if it is a global module, just use it. 
 
-## 10. Project Configuration
+## 11. Project Configuration
 The presence of a `tsconfig.json` file in a directory indicates that the directory is the root of a TypeScript project. The file specifies compiler options and source files. Use `tsc [-p path/to/config-file]` to compile the object. If no `-p` option, use `tsconfig.json` in the current directory. 
 
 The source files can be specified as `"files"`, `"include"`, `"exclude"` options. 
