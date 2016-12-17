@@ -14,7 +14,7 @@ JavaScript code is valid TypeScript Code.
 
 TypeScript adds type annotations to function arguments. 
 
-TypeScript has `interfacee`. Two types are compatible if their internal structure is compatible, therefore there is no need for an explict `implements` clause. 
+TypeScript uses `interface` to describe the shape of an object. Two types are compatible if their internal structure is compatible, therefore there is no need for an explict `implements` clause. 
 
 TypeScript use `public` on argument in the class constructor to automatically create properties with that name. 
 

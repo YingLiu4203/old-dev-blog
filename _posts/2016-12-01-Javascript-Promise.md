@@ -81,7 +81,7 @@ There are tools like `Async.js` to help composing CSP code.
 ### 2.3. Pros and Cons of callbacks
 Callbacks are easy to understand but have cons: 
 
-* Error handling is confusing. here are two ways reporting errors: via callbacks and via exceptions. 
+* Error handling is confusing. There are two ways reporting errors: via callbacks and via exceptions. 
 * Parameters are mixed with callback for result processing.
 * Composition is hard. 
 * For Node.js style, resuing error handler or setting default error handler are hard. 
@@ -111,12 +111,12 @@ function asyncFunc() {
 }
 
 // another asyn function
-function asyncFunc2() {...}
+function asyncFunc2(arg) {...}
 
 // use it
 asyncFunc()
 .then(result => {
-    return asyncFunc2() // (A)
+    return asyncFunc2(result) // (A)
 })
 .then(result2 => {  // (B)
     // use result2
