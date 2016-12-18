@@ -8,11 +8,11 @@ tags:
 ---
 
 ## 1. Chakram Introduction
-[Chakram](http://dareid.github.io/chakram/) is a framework to test JSON REST endpoint. It use promises and offers a BDD testing style. It is build on node.js, [mocha](http://mochajs.org/) test framework and [chai](http://chaijs.com/) BDD assertion library. It use the [request lib](https://github.com/request/request) to provide comprehensive REST request capaiblities. 
+[Chakram](http://dareid.github.io/chakram/) is a framework to test JSON REST endpoint. It use promises and offers a BDD testing style. It is built on node.js, [mocha](http://mochajs.org/) test framework and [chai](http://chaijs.com/) BDD assertion library. It use the [request lib](https://github.com/request/request) to provide comprehensive REST request capaiblities. 
 
 Chakram allows testing of:
 * status code 
-* Coooke and Header values
+* Coookie and Header values
 * JSON structure and values
 * Compression
 * response times
@@ -25,12 +25,16 @@ A test suite contains test cases or other test suites. A test case is the test w
 By default, mocha looks for the ./test/*.js to run tests.  
 
 ### 2.1. Interfaces
+
 * `describe` is a test suite. The first parameter is a title and the second is a function that can have other test suites or test cases.  
 * `it` is a test case that has a title and a test function. 
 * `before`, `after`, `beforeEach` and `afterEach` can be applied to both `describe` and `it`. They can be even used outside a block as root-level hooks.   
 
 ### 2.2. Asynchronous, Synchronous and Arrow Function
-To test asynchronous code, 1) just add a `done` parameter to `it` test function and call it at the end of async callback or end of the test, Mocha will wait for the test function; 2) use promise.   To test synchronous code, omit the callback. 
+To test asynchronous code, use one of the following two methods: 
+
+* just add a `done` parameter to `it` test function and call it at the end of async callback or end of the test, Mocha will wait for the test function;
+* use promise.  To test synchronous code, omit the callback. 
 
 Avoid arrow function as the test.  
 
@@ -47,6 +51,8 @@ Use `this.slow(value-in-ms)` to set slow standard.
 At suite level or test level (even hook level), call `this.timeout(value-in-ms)` to set a timeout for the suite or the test. if the `value-in-ms` is 0, no timeout.  
 
 ### 2.5. Usage
+The Mocha command line options are:
+
 * `-g <pattern>`: only run tests matching pattern.
 * `-f <string>`: onlyu run tests containing string. 
 * `-s <ms>`: set slow threshhold in milliseconds. Default is 75.
