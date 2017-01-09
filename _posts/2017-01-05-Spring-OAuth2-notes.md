@@ -32,65 +32,10 @@ The first setp in an OAuth process it to register a new app. You give the author
 The redirect URI must be an HTTPs endpoints and should be an exact match. Try to avoid query string. OAuth2 provides a "state" parameter to let you store CSRF string or app-specific data. 
 
 #### 1.1.2. Authorization  
-There are two types of authrization workflow: one for web server apps and one for broswer/mobile apps. 
+There are several types of authrization workflow for differnt apps such as web server apps and broswer/mobile apps. See the grant types for detail workflows. 
+ 
 
-##### 1.1.2.1. Web Server Apps
-It creates a link that points to the authentication server using its `client_id` and redirect uri (must be registered). An example is: 
-
-`https://oauth2server.com/auth?response_type=code&client_id=CLIENT_ID&redirect_uri=REDIRECT_URI&scope=photos` 
-
-The user clicks on the link and sees an authorization page. If the user clicks "Allow", the service redirects the user back to the web server with an authorization code. For example: 
-
-`https://oauth2client.com/cb?code=AUTH_CODE_HERE`
-
-Then the web server app exchanges the auth code for an access token: 
-
-```
-POST https://api.oauth2server.com/token
-    grant_type=authorization_code&
-    code=AUTH_CODE_HERE&
-    redirect_uri=REDIRECT_URI&
-    client_id=CLIENT_ID&
-    client_secret=CLIENT_SECRET
-```
-
-The server replies with an access token or an error. 
-
-```
-{
-    "access_token":"RsT5OjbzRn430zqMLgV3Ia"
-}
-
-{
-    "error":"invalid_request"
-}
-```
-
-This is the most secure way to authorize access because the access token and `client_secret` are only visible to the web server apps. 
-
-##### 1.1.2.2. Browser-Based Apps
-The `client_secret` is not used in this case. The client creates a link: 
-
-`https://oauth2server.com/auth?response_type=token&client_id=CLIENT_ID&redirect_uri=REDIRECT_URI&scope=photos`
-
-When the user clicks the link, an authorization prompt is presented to let the user deny or allow the access. If the user clicks "Allow", the service redirects the user back to the redirect uri with an access token or an error code in the URI fragement. 
-
-`https://oauth2client.com/cb#token=ACCESS_TOKEN`
-
-#### 1.1.3. Password Grant Type 
-It is possible to exchange a username and password for an access token directly. Just post a request like the following: 
-
-```
-POST https://api.oauth2server.com/token
-    grant_type=password&
-    username=USERNAME&
-    password=PASSWORD&
-    client_id=CLIENT_ID
-```
-
-And the server will reply with an access token in the same format as the other grant type. 
-
-#### 1.1.4. Making Authenticated Requests
+#### 1.1.3. Making Authenticated Requests
 Making a request over HTTPS with the access token like the following: 
 
 ```
@@ -100,8 +45,8 @@ https://api.oauth2server.com/1/me
 
 It is also possible to use the token in a post body parameter -- check API server for clarification. 
 
-### 1.2. Access Token Response 
-The access token response has the following properties: 
+### 1.2. Access Token  
+The access token may have the following properties: 
 * access_token 
 * token_type: usually "bearer"
 * expires_in: duration of time the access token is granted for
@@ -147,6 +92,39 @@ This is used by confidential clients (Web Server Apps). The client interacts wit
 +---------+       (w/ Optional Refresh Token)
 ```
 
+It is often used by a web server app.  The web server app creates a link that points to the authentication server using its `client_id` and redirect uri (must be registered). An example is: 
+
+`https://oauth2server.com/auth?response_type=code&client_id=CLIENT_ID&redirect_uri=REDIRECT_URI&scope=photos` 
+
+The user clicks on the link and sees an authorization page. If the user clicks "Allow", the service redirects the user back to the web server with an authorization code. For example: 
+
+`https://oauth2client.com/cb?code=AUTH_CODE_HERE`
+
+Then the web server app exchanges the auth code for an access token: 
+
+```
+POST https://api.oauth2server.com/token
+    grant_type=authorization_code&
+    code=AUTH_CODE_HERE&
+    redirect_uri=REDIRECT_URI&
+    client_id=CLIENT_ID&
+    client_secret=CLIENT_SECRET
+```
+
+The server replies with an access token or an error. 
+
+```
+{
+    "access_token":"RsT5OjbzRn430zqMLgV3Ia"
+}
+
+{
+    "error":"invalid_request"
+}
+```
+
+This is the most secure way to authorize access because the access token and `client_secret` are only visible to the web server apps. 
+
 #### 1.3.2. Implicit Grant
 This grant type is typically used by public client (SPA or mobile apps) to obtain access tokens without using authorization code and refresh token. The workflow is as the following: 
 
@@ -187,6 +165,14 @@ This grant type is typically used by public client (SPA or mobile apps) to obtai
 
 The Web-Hosted Client Resource is a an HTML with JavaScript code that is able to extract the access token. 
 
+The `client_secret` is not used in this case. The client has a link: 
+
+`https://oauth2server.com/auth?response_type=token&client_id=CLIENT_ID&redirect_uri=REDIRECT_URI&scope=photos`
+
+When the user clicks the link, an authorization prompt is presented to let the user deny or allow the access. If the user clicks "Allow", the service redirects the user back to the redirect uri with an access token or an error code in the URI fragement. 
+
+`https://oauth2client.com/cb#token=ACCESS_TOKEN`
+
 #### 1.3.3. Resource Owner Password Credential Grant
 This grant type is suitable for clients capable of obtaining the user's credentials. It is also used to migrate existing clients from HTTP Basic to OAuth by converting the stored credentials to an access token.  It has the following workflow: 
 
@@ -209,6 +195,18 @@ This grant type is suitable for clients capable of obtaining the user's credenti
 |         |    (w/ Optional Refresh Token)   |               |
 +---------+                                  +---------------+
 ```
+
+In this case, the client just posts a request like the following: 
+
+```
+POST https://api.oauth2server.com/token
+    grant_type=password&
+    username=USERNAME&
+    password=PASSWORD&
+    client_id=CLIENT_ID
+```
+
+And the server will reply with an access token in the same format as the other grant type. 
 
 #### 1.3.4. Client Credentials Grant
 It's only useb by confidential clients to access the protected resources under its control, or those of another resource owner that have been previously arranged with the authorization server. The workflow is as the following: 
