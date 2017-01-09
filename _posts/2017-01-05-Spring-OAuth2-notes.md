@@ -237,19 +237,39 @@ The following Spring Security request filter is used to implement resource servi
 
 ### 2.2. Authorization Server Configuration
 The `@EnableAuthorizationServer` annotation, working with any `@Beans` that implements `AuthorizationServerConfigurer`, to configure the authorization server.  Spring creates three separate configurers used by `AuthorizationServerConfigurer`:
-* `ClientDetailsServiceConfigurer`: configures client details such as `clientId`, `secret`, `scope`, `authorizedGrantTypes` and `authorities`. 
+* `ClientDetailsServiceConfigurer`: configures an OAuth2 client details such as `clientId`, `secret`, `scope`, `authorizedGrantTypes` and `authorities`. 
 * `AuthorizationServerSecurityConfigurer`: defines security constraints on the token endpoints. 
 * `AuthorizationServerEndpointsConfigurer`: defines authorization endpoints, grant types, and token service. 
 
-### 2.3. Manage Tokens 
-The `AuthorizationServerTokenServices` interface defines the create, get and refresh operations to manage OAuth2 access tokens. The `DefaultTokenServices` class implements the inteface using random UUID for access token and referesh token. The `DefaultTokenServices` trranslates between token values and authentication information. It uses implementation of `TokenStore` interface to handle token persistence. There are three stores: `InMemoryTokenStore`, `JdbcTokenStore` and `JwtTokenStore`. 
+### 2.2.1. Manage Tokens 
+The `AuthorizationServerEndpointsConfigurer` has several token-related configuration methods. 
+
+One method is `tokenServices(AuthorizationServerTokenServices tokenServices)` for token services. The `AuthorizationServerTokenServices` interface defines the following services: 
+
+1. `createAccessToken`: create an access token for an OAuth2 authentication. The authentication must be stored so that API server accepting the access token can reference it later. 
+2. `refreshAccessToken`: refresh an access token.
+3. `getAccessToken`: Retrieve an access token for the provided OAuth2authentication. 
+
+The `DefaultTokenServices` class implements the inteface using random UUID for access token and referesh token. The `DefaultTokenServices` trranslates between token values and authentication information. 
+
+Another method `tokenStore(TokenStore tokenStore)` sets the token store used by the `DefaultTokenServices` to handle token persistence. There are three stores: `InMemoryTokenStore`, `JdbcTokenStore` and `JwtTokenStore`. 
 
 The `JwtTokenStore` doesn't persistent any data. It encode token data using the JSON Web Token (JWT) spec. It depends on a `JwtAccessTokenConverter` that encode and decode the access token. The token are signed by default. To verify an access token, the resource server either needs a shared symmetric key or the public key of the authorization server.  The public key (if available) is exposed by the Authorization Server on the `/oauth/token_key` endpoint, which is secure by default with access rule `denyAll()`. You can open it up by injecting a standard SpEL expression into the `AuthorizationServerSecurityConfigurer`. To use the `JwtTokenStore` you need `spring-security-jwt` on your classpath. 
 
-### 2.4. Resource Server Configuration
+### 2.2.2 Grant Types
+The `AuthorizationServerEndpointsConfigurer` can set the following properties to affect grant types: 
+
+* `authenticationManager`: enables password grant. 
+* `authorizationCodeServices`: defines the authorization code services
+* `implicitGrantService`: manages state during the imlpicit grant.
+* `userDetailsService`: used by refresh token grant
+
+### 2.3. Resource Server Configuration
 
 
-Resource: 
+
+## Resources: 
+
 1. [Oauth2 Getting Started][1]
 2. [Spring Security OAuth2 Document][2]
 3. [Spring Secruity OAuth2 Tutorial][3]
