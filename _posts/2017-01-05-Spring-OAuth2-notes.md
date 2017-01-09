@@ -249,6 +249,13 @@ The `JwtTokenStore` doesn't persistent any data. It encode token data using the 
 ### 2.4. Resource Server Configuration
 
 
+Resource: 
+[Oauth2 Getting Started][1]
+[Spring Security OAuth2 Document][2]
+[Spring Secruity OAuth2 Tutorial][3]
+[Spring Boot Security OAuth2 Totorial][4] 
+[Python OAuth Lib Grant Types and Workflows][5]
+
 [1]: https://oauth.net/getting-started/
 [2]: https://projects.spring.io/spring-security-oauth/docs/oauth2.html
 [3]: http://projects.spring.io/spring-security-oauth/docs/tutorial.html
