@@ -256,17 +256,45 @@ Another method `tokenStore(TokenStore tokenStore)` sets the token store used by 
 
 The `JwtTokenStore` doesn't persistent any data. It encode token data using the JSON Web Token (JWT) spec. It depends on a `JwtAccessTokenConverter` that encode and decode the access token. The token are signed by default. To verify an access token, the resource server either needs a shared symmetric key or the public key of the authorization server.  The public key (if available) is exposed by the Authorization Server on the `/oauth/token_key` endpoint, which is secure by default with access rule `denyAll()`. You can open it up by injecting a standard SpEL expression into the `AuthorizationServerSecurityConfigurer`. To use the `JwtTokenStore` you need `spring-security-jwt` on your classpath. 
 
-### 2.2.2 Grant Types
+### 2.2.2。 Grant Types
 The `AuthorizationServerEndpointsConfigurer` can set the following properties to affect grant types: 
 
 * `authenticationManager`: enables password grant. 
 * `authorizationCodeServices`: defines the authorization code services
 * `implicitGrantService`: manages state during the imlpicit grant.
 * `userDetailsService`: used by refresh token grant
+* `tokenGranter`: controls everything and overrides all above 
+
+### 2.2.3. Customize the UI
+Both the `/oauth/confirm_access` and the HTML response from `/oauth/error` are user interfaces. The user interacts with `/oauth/confirm_access` to approve or deny the authorizaiton request. The result is posted back to `oauth/authorize`. The request parmeters are passed directly to a `UserApprovalHandler` that may use `ApprovalStore` set in the `AuthorizationServerEndpointsConfigurer`. 
+
+Spring secruity uses a request parameter `_csrf` for CSRF protection. 
+
+### 2.2.4. Mapping User Roles to Scopes
+If you use a `DefaultOAuth2RequestFactory` in your `AuthorizationEndpoint`, you can set a flag `checkUserScopes=true` to restrict permitted scopes to only those that match the user's roles. 
 
 ### 2.3. Resource Server Configuration
+Spring OAuth provides a authentication filter for reesource protection. It is enabled by put `@EnableResourceServer` on an `@Configuration` class. The `@EnableResourceServer` annotation adds a filter of type `OAuth2AuthenticationProcessingFilter` automatically to the Spring Security filter chain. The `ResourceServerConfigurer` can configure the following features: 
 
+* `tokenServices`: configure an instance of `ResourceServerTokenServices`
+* `resourceId`: the id for the resource. 
+* other extension points for the resources server,for example, `tokenExtractor` to extract tokens from incoming request. 
+* request matchers for protected resources. 
+* access rules for protected resources, default is "authenticated". 
 
+The `ResourceServerTokenServices` is the interface for decoding the access tokens. The `DefaultTokenServices` and `TokenStore` are often used to implement the services. `RemoteTokenServices` which is a Spring OAuth features (not part of the spec) allowing Resource Servers to decode tokens through an HTTP resource on the Authorization Server (`/oauth/check_token`). 
+
+### 2.4. OAuth2 Client
+The OAuth2 client is used to access other OAuth2 protected resources of other servers.  It uses an implementation of `OAuth2ProtectedResourceDetails` for a specific grant type. 
+
+The `@EnableOAuth2Client` does two things: 
+
+* create a filter bean to store the current request and context. 
+* create a bean of type `AccessTokenRequest` in request scope. 
+
+Use `RestTemplate` to access protected resources. Use `ClientTokenServices` to presistent tokens. 
+
+To work with external OAuth2 providers such as Facebook, you need to customize the client because they often don't implement the OAuth2 specification correctly. 
 
 ## Resources: 
 
