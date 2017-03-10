@@ -47,8 +47,4 @@ sourceSets {
 }
 ```
 
-Then in you Jpa repository interface definition, make your repository also extends `QueryDslPredicateExecutor<YourEntityType>`. 
-
-If you use IntelliJ IDEA IDE and use different module for different source set, in `File --> Project Structure --> Modules`, add three dependencies to the generated module: your main module and two Querydsl libraries(`querydsl-core` and `querdsl-jpa`). On the other side, add the generated module as a dependency for your main module. You cannot build project in IDE because of the cyclic dependencies but you should be able to run with `gradle bootRun`. 
-
-Now you should be able to build and run your application with Querydsl functions. 
+Then in you Jpa repository interface definition, make your repository also extends `QueryDslPredicateExecutor<YourEntityType>`. Now you should be able to build and run your application with Querydsl functions. 
