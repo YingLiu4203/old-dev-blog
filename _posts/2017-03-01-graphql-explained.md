@@ -77,9 +77,3 @@ A resolver function receives three arguments:
 If a resolve is not provided for a field, the property of the same name of the previous object is used as the return value. 
 
 When all fields are resolved, the reulting value is stored in a key-value map and is usally sent as a JSON string to a client. 
-
-
-
-
-
-
