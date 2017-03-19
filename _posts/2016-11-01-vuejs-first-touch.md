@@ -52,9 +52,9 @@ The expression in a data binding can be a full-power JavaScript expression. Stat
 * {{js expression}}: JavaScript expression -- not statement.
 * {{ message | capitalize }}: filters only used in `v-bind` and mustache interpolations. 
 
-Use a `v-text` directive or the "Mustache" syntax to bind data in text, for example, `<span>Message: {{ msg }}</span>`.  This bind the text to the `msg` property of the data object and will be updated whenever the `msg` property changes. 
+Use a `v-text` directive or the "Mustache" syntax to bind data in text, for example, `<span>Message: \{\{ msg \}\}</span>`.  This bind the text to the `msg` property of the data object and will be updated whenever the `msg` property changes. 
 
-To rend the text only once and do not update on the following data changes, use `v-once` directive. For example, `<span v-once>This will never change: {{msg}}</span>`. 
+To rend the text only once and do not update on the following data changes, use `v-once` directive. For example, `<span v-once>This will never change: \{\{ msg \}\}</span>`. 
 
 Use `v-bind` directive to dynamically bind one or more attributes, or a component prop to an expression. For example: `<img v-bind:src="imageSrc">`. The shorthand is `<img :src="imageSrc">`. 
 
@@ -137,7 +137,7 @@ A component has a `props` option. The prop type can be specified as one or more 
 To support custom events, every Vue instance implements an event interface that has two methods: 
 * Listen to an event using `$on(eventName)`
 * Trigger an event using `$emit(eventName)`
-A parent component can listen to its child component using `v-on` directly in the template where the child component is used. use `.native` modifier to listen on only native event. 
+A parent component can listen to its child component using `v-on` directly in the template where the child component is used. Use `.native` modifier to listen on only native event. 
 
 The `<input v-model="something">` is a syntactic sugar for `<input v-bind:value="something" v-on:input="something = $event.target.value">` in general and `<input v-bind:value="something" v-on:input="something = arguments[0]">` in a component. So for a component to use `v-model`, it must
 * accept a `value` prop
