@@ -8,40 +8,20 @@ tags:
 ---
 
 ## 1. Introduction
-This is a study notes of https://vuejs.org/guide/. 
+This is a study notes of https://vuejs.org/v2/guide/. 
+Updated on 03/30/2017. 
 
-Vue is a progressive JavaScript framework for building Web UI. The term "progressive" means that the core libary only has a view layer, but with other tools, it is capable of powering a non-trivial SPA.
+Vue is a reactive library that can bind data to text (using `{{exporession}}`, attribute (using `v-bind: `) and structure (using `v-if`) of the DOM. It can even apply transition effects when elements are changed. 
 
-### 1.1. Project Scaffolding 
-Vue provides a simple CLI for scaffolding Vue projects.  Following are commands used to scaffold a project using the "webpack" template. 
+Use `v-for` for a list of items. `v-on` to add event listeners. `v-model` for two-way binding between form input and app data. 
 
-```sh
-# install vue-cli
-$ npm install --global vue-cli
-
-# create a new project using the "webpack" template
-$ vue init webpack my-project
-
-# install dependencies and go!
-$ cd my-project
-$ npm install
-$ npm run dev
-```
-
-The `vue init webpack my-project` asks you whether to use ESLint, unit test and e2e test. We should use all these tools. 
-
-The `npm install` may come with a warning message "eslint-config-standard@6.2.1 requires a peer of eslint-plugin-promise@>=3.3.0 but none was installed.".  To fix it, first edit the line "eslint-plugin-promise" version in `package.json` from "^2.0.1" to "^3.3.0". then run `npm install` to install the new version.    
-
-### 1.2. Declarative Rendering
-Vue can render data to declaratioins in a corresponding template element. 
-
-Additionally, Vue has a component system to support component composing.
+Vue uses component composition for building apps. 
 
 ## 2. Basic Concepts
 ### 2.1. The Vue Instance
 A Vue instance is a ViewModel (vm) as in MVVM pattern. It has options such as data, template, element to mount on, methods, lifecycle callbacks and more. 
 
-A Vue instance proxies all the properties found in its `data` object. It has some properties and methods. It has some hooks at different stage of the instance's life. For example, `beforeCreate`, `created`, `beforeMount`, `mounted`, `beforeUpdated`, `updated`, `activated`, `beforeDestroy` and `destroyed`. 
+A Vue instance proxies all the properties found in its `data` object. It has some properties and methods. It has some hooks at different stage of the instance's life. For example, `beforeCreate`, `created`, `beforeMount`, `mounted`, `beforeUpdated`, `updated`, `activated`, `beforeDestroy` and `destroyed`.  Vue proxies its `data` object properties between `beforeCreate` and `created`.  
 
 ### 2.2. Template Syntax
 Components must contain exactly one root node. 
@@ -50,7 +30,7 @@ Components must contain exactly one root node.
 The expression in a data binding can be a full-power JavaScript expression. Statements such as assignment or flow control are illegal. 
 * {{ message }}: text rendering.
 * {{js expression}}: JavaScript expression -- not statement.
-* {{ message | capitalize }}: filters only used in `v-bind` and mustache interpolations. 
+* {{ message | capitalize }}: filters can only be used in `v-bind` and mustache interpolations. 
 
 Use a `v-text` directive or the "Mustache" syntax to bind data in text, for example, `<span>Message: \{\{ msg \}\}</span>`.  This bind the text to the `msg` property of the data object and will be updated whenever the `msg` property changes. 
 
@@ -58,7 +38,7 @@ To rend the text only once and do not update on the following data changes, use 
 
 Use `v-bind` directive to dynamically bind one or more attributes, or a component prop to an expression. For example: `<img v-bind:src="imageSrc">`. The shorthand is `<img :src="imageSrc">`. 
 
-When used without an argument, it bind an object containing attribute name-value pairs. For example: `<div v-bind="{ id: someProp, 'other-attr': otherProp }"></div>`. 
+When used without an argument, it binds an object containing attribute name-value pairs. For example: `<div v-bind="{ id: someProp, 'other-attr': otherProp }"></div>`. 
 
 #### 2.2.2. Directives
 A directive is a special attribute that has a `v-` prefix. The directive attribute value shoud be a single JS expression. A directive can have arguments after a colon symbol, for example: `b-bind:href` or `v-on:click`. Modifiers are special postfix following a dot to modify the behavior. For example, `v-on:submit.prevent`. 
@@ -82,14 +62,14 @@ The difference between a computed property and a method is that the computed pro
 In most cases, computed properties are more appropriate than watchers. When there is a need to perform an asynchronous or expensive operation, a `watch` option is a better choice than the computed properties. 
 
 ### 2.4. Class and Style Bindings
-When `v-bind:class="classObject"` is used, all properties of the `classObject` are bind to the class attribute. Both the `:class="{ active: isActive, 'text-danger': hasError }"` and `:class="[activeClass, errorClass]"` are fine. 
+When `v-bind:class="classObject"` is used, all properties of the `classObject` are bind to the class attribute. Both the `:class="{ active: isActive, 'text-danger': hasError }"` and `:class="[activeClass, errorClass]"` are fine. The values of `activeClass` and `errorClass` are set as the class value. 
 
 The same syntax can be used for inline styles with the `v-bind:sytle` directive. 
 
 ### 2.5. Conditional and List Rendering
 Conditional: `v-if`, `v-else`, `v-show` (only toggles the `display` CSS). 
 
-List: `v-for` (with element/index, or value, key and index). It can be used in components. It is recommended to provide a key with `v-for` whenever possible. 
+Use `v-for` with element/index, or value, key and index. It takes an integer `v-for="n in 10"`. It can be used in components. It is recommended to provide a key with `v-for` whenever possible. 
 
 Vue also defines array methods: `set()`, `push()`, `pop()`, `shift()`, `unshift()`, `splice()`, `sort()`, and `reverse()`.  There are non-mutation methods such as `filter()`, `concat()`, and `slice()`. Don't use `items[index] = value` because Vue cannot monitor the changes. 
 
@@ -111,6 +91,19 @@ There are some event modifier for `v-on`.
 * `lazy`: sync after "change" instead of "input".
 * `number`: convert to a number.
 *  `trim`: trim input. 
+
+The code 
+
+```html
+<input v-model="something">
+```
+
+is just a syntactic sugar for 
+```html
+<input
+  v-bind:value="something"
+  v-on:input="something = $event.target.value">
+```
 
 ## 3. Components
 A Vue app requires one and only one **root Vue instance** with the `Vue`  constructor function: `var vm = new Vue({  // options })`. An app usually has many components (use "components" to mean Vue instances that are not the root instance). Components can be defined in a delcaritive way or use the `Vue.extend({ //extension options })` method. 
