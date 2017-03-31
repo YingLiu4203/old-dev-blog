@@ -106,27 +106,32 @@ is just a syntactic sugar for
 ```
 
 ## 3. Components
-A Vue app requires one and only one **root Vue instance** with the `Vue`  constructor function: `var vm = new Vue({  // options })`. An app usually has many components (use "components" to mean Vue instances that are not the root instance). Components can be defined in a delcaritive way or use the `Vue.extend({ //extension options })` method. 
+A Vue app requires one and only one **root Vue instance** with the `Vue`  constructor function: `var vm = new Vue({  // options })`. An app usually has many components. Components can be defined in a delcaritive way or use the `Vue.extend({ //extension options })` method. Use `Vue.component(tagName, options)` to register a global component. Use `components` option to register a local component within another component. 
+
+### 3.0. Naming Conventions
+When registering components or props, one can use kebab-case, camelCase or TitleCase. Within HTML templates, one have to use the kebab-case equivalents. Using template inside `.vue` Components doesn't have the restrictions. 
 
 ### 3.1. Registration
 Components are custom elements that Vue attaches behavior to. They may be used as a native HTML elment with the special `is` attribute. To register a global component, use `Vue.component(tagName, options)`.  Tag names should be all-lowercase and contain a hyphen. Once registered, the custom elment can be used as `<tagName></tagName>`. Use `components` instance option to register a local component.
 
-In root Vue instance, when use `el` option without `template`, the selected element with existing content will be compiled and mounted. Because the content is available after the HTML is parsed and normalized, there are some restrictions in its syntax. It is recommended to use string templates from one of the following sources without those restrictions:
-
-* `<script type="text/x-template">`.
-* JavaScript inline template string.
-* `.vue` Components.  
+In root Vue instance, when use `el` option without `template`, the selected element with existing content will be compiled and mounted. Because the content is available after the HTML is parsed and normalized, there are some restrictions in its syntax. Using template inside `.vue` Components doesn't have the restrictions.   
 
 ### 3.2. Component `data`
-According to https://vuejs.org/v2/api/#data, the data property of a Vue instance can be an object (ok for the root Vue instance) or a function. In a component definition, the value MUST be a funciton that returns the initial object. The component will ignore the data option if it is not a funciton. When an instance is created from the component defintion, the data function should return a fresh copy of an initial object. 
+According to https://vuejs.org/v2/api/#data, the data property of a Vue instance can be an object (ok for the root Vue instance) or a function. In a component definition, the value MUST be a funciton that returns the initial object. The component will ignore the data option if it is not a funciton. When an instance is created from the component defintion, the data function should return a fresh copy of an initial object.
 
 The data object will be converted into a "reactive" one with its properties rewritten as getters/setters when an instance is created. The data object can be access as `vm.$data` and all its properties are proxied as vm propertie, therefore `vm.$data.myProp` is the same as `vm.myProp`. 
 
 ### 3.3. Composing Components
-In Vue, the parent-child component relationship is props down, event up. Child should not mutate a prop passed down by its parent. If a child needs to mutate the data, use a computed property or amke a local copy. 
+In Vue, the parent-child component relationship is props down, event up. Child should not mutate a prop passed down by its parent. If a child needs to mutate the data, use a computed property or make a local copy. 
 
-A component has a `props` option. The prop type can be specified as one or more (yes, multiple types are possible) of the following type: `String`, `Number`, `Boolean`, `Function`, `Object`, `Array`， a custom constructor function or a validtor function. For a custom constructor function, the assertion will be made with an `instanceof` check. When assertion fails, Vue produces a warning message.
+### 3.4. Component `props`
+A component has a `props` option. A prop is a custom attribute for passing information from parent component. The prop type can be specified as one or more (yes, multiple types are possible) of the following type: `String`, `Number`, `Boolean`, `Function`, `Object`, `Array`， a custom constructor function or a validtor function. For a custom constructor function, the assertion will be made with an `instanceof` check. When assertion fails, Vue produces a warning message.
 
+When passing values via props, all literals are treated as a string. Thus `<comp some-prop="37">` will pass a string "37" to `some-prop`. When using `v-bind`, the literals are evalated as a JavaScript expression. `<comp :some-prop="37">` will pass a number 37 to `some-prop`.
+
+Props are one-way: from a parent to a child. When the parent data updates, it will flow down to the bound prop. 
+
+### 3.5. Custom event
 To support custom events, every Vue instance implements an event interface that has two methods: 
 * Listen to an event using `$on(eventName)`
 * Trigger an event using `$emit(eventName)`
