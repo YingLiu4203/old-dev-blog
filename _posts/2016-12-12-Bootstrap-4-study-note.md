@@ -200,7 +200,40 @@ Use `.card-group` to style a group of cards into uniform sizing. Use `.card-deck
 
 Cards can be organized into Masonry-like columns with just CSS by wrapping them in `.card-columns`. 
 
-### 5.3. Carousel, Collapse, Dropdowns
+### 5.3. Nav and Navbar
+
+#### 5.3.1. Nav
+
+The basic navigation links are as the following: 
+
+```html
+<nav class="nav">
+  <a class="nav-link active" href="#">Active</a>
+  <a class="nav-link" href="#">Link</a>
+  <a class="nav-link" href="#">Link</a>
+  <a class="nav-link disabled" href="#">Disabled</a>
+</nav>
+```
+
+If `<ul>` is used, use `.nav-item` for `<li>` to work as a parent of a link. 
+
+To stack navigation vertically, use `.flex-column` utility. Use `.nav-tabs` for a tabbed interface. Use `.nav-pills` for a pilled interface. 
+
+Fill and justify modifiers include `.nav-fill`, `.nav-justified`, and some flexbox utilities for responsive navigation. 
+
+#### 5.3.2. Navbar
+The navbar is a wrapper that places branding, navigation and other elements in a header. 
+
+A navbar requires a wrapping `.navbar` with `.navbar-toggleable-*` for responsive collapsing and color scheme classes. A navbar and its contents are fluid by default. A navbar is responsive by default. For accessibility, using a `<nav>` element or adding a `role="navigation"` to a generic element `<div>`. 
+
+A navbar support the following contents: 
+* `.navbar-brand` for site name/brand. 
+* `.navbar-nav` for a full-height and lightweight navigation. 
+* `.navbar-toggle` for collapse plugin. 
+* `.form-inline` for form controls.
+* `.navbar-text` for vertically centered text. 
+* `.collapse.navbar-collapse` for grouping contents. 
+
 
 
 
