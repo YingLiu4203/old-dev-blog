@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Spring Data JPA Study Note
+title: Bootstrap v4 Study Note
 categories:
 - Development
 tags:
