@@ -234,7 +234,97 @@ A navbar support the following contents:
 * `.navbar-text` for vertically centered text. 
 * `.collapse.navbar-collapse` for grouping contents. 
 
+## 6. Utilities
+Bootstrap includes dozens of utilities. Each utility has a single purpose. 
 
+### 6.1. Borders, clearfix and Close Icon
+Remove all borders or some borders: `border-0`, `border-right-0` and etc. 
+Border radius round an element's corners: `rounded`, `rounded-top`, `rounded-circle` , `rounded-0` and etc. 
 
+Use `.clearfix` to clear float. 
 
+The following is a generic clos icon for dismissing content like modals or alerts. 
+
+```html
+<button type="button" class="close" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+</button>
+```
+
+### 6.2. Colors
+There are 7 text colors: `text-*` where `*` can be any of `muted`, `primary`, `success`, `info`, `warning`, `danger`, and `white`. It can be applied to texts or links. 
+
+Thre are 7 background colors: `bg-*` including `primary`, `success`, `info`, `warning`, `danger`, `inverse`, and `faded`. 
+
+### 6.3. Flexbox
+Flexbox manages layout, alignment, and sizing fo grid columns, navigation, components, and more. 
+
+#### 6.3.1. Enable flex behaviors
+Apply display property to create a flexbox container and transform direct children elements into flex items. Display classes include `d-flex`, `d-inline-flex`, `d-*-flex`, and `d-*-inline-flex`. The `*` could be one of the responsive variations: `sm`, `md`, `lg`, and `xl`.  
+
+#### 6.3.2. Direction
+Set the direction of flex items in a flex container. Use `flex-row` or `flex-row-reverse` to set a horizontal direction. Use `flex-column` or `flex-column-reverse` to set a vertical direction. Both can add the responsive variations like `flex-sm-row-reverse`. 
+
+#### 6.3.3. Alignment
+Use `justify-content-*` to change alignment of flex items on the main axis (x-axis for `flex-row`, or y-axis for `flex-column`): `justify-content-start`, `justify-content-end`, `justify-content-center`, `justify-content-between`, `justify-content-around`. 
+
+Use `align-items-*` to change the alignment of flex items on the cross axis (the y-axis for `flex-row` or x-axis for `flex-column`). The options are `start`, `end`, `center`, `baseline`, and `stretch`. 
+
+Use `align-self` on flexbox tiems to change alignment on the cross-axis. It has the same options as `align-items` 
+
+All above aligment uitilities have responsive varations. They can be used with auto margins `mr-auto` to move one, not all, items to a different direction. 
+
+#### 6.3.4. Wrap
+
+Use `flex-nowrap` to not wrap items; Use `flex-wrap` to wrap. They have responsive varaiations. 
+
+#### 6.3.5. Order
+Use `order-*` to change the visual order of specific flex items to the `first`, `last` or `unordered` (the DOM order). 
+
+#### 6.3.6. Align Content
+Use `align-content-*` utilities on flexbox containers to align flex items together on the cross axis. Choose from `start` (browser default), `end`, `center`, `between`, `around`, or `stretch`. Three are responsive varations. 
+
+### 6.4. Display Property
+Use `d-block`, `d-inline`, or `d-inline-block` to simply set an element’s display property to block, inline, or inline-block (respectively).
+
+### 6.5. Image Replacement and Element Hidden
+Use `text-hide` to replace text content with a background image. Use `invisible` to hide an element. 
+
+### 6.6. Position
+Use position utilities to place a component outside the normal document flow. There are three classes: `fixed-top`, `fixed-bottom` and `sticky-top`. 
+
+### 6.7. Responsive Helpers
+
+For vidoes or slideshows, use `embed-responsive` with ratios like `embed-responsive-21by9`, `embed-responsive-16by9`, `embed-responsive-4by3`, and `embed-responsive-1by1`. Optionally, use an explicit descendant class `embed-responsive-item` to <iframe>, <embed>, <video>, and <object> elements. 
+
+Use `float-[sm|md|lg|xl]-{left|right|none}` for responsive float. 
+
+### 6.8. Screenreaders
+
+Hide an element to all devices except screen readers with `sr-only`. Combine `sr-only` with `sr-only-focusable` to show the element again when it’s focused (e.g. by a keyboard-only user).
+
+### 6.9. Sizing
+For width: `w-25`, `w-50`, `w-75`, `w-100` and `mw-100`. 
+For height: `h-25`, `h-50`, `h-75`, `h-100` and `mh-100`. 
+
+### 6.10. Spacing
+Bootstrap has responsive-friendly margin and padding values ranging from `.25rem` to `3rem`. The classes are named using the format `{property}[sides]-{size}` for xs and `{property}[sides]-{breakpoint}-{size}` for sm, md, lg, and xl. The propery is `m` for margine and `p` for padding. The side is one of `t` for top, `b` for bottom, `l` for left, `r` for right, `x` for left and right, `y` for top and bottom. 
+
+The size is 
+* `0`: no margin or padding.
+* `1`: 0.25 rem (actually is `$spacer-x * 0.25`)
+* `2`: 0.5 rem
+* `3`: 1 rem
+* `4`: 1.5 rem
+* `5`: 3 rem
+
+### 6.11. Typography
+Responsive text align classes `text-[sm|md|lg|xl]-{justify|left|center|right}`
+
+Text transform: `text-lowercase`, `text-uppercase`, and `text-capitalize`. 
+
+Text style: `font-weight-bold`, `font-weight-normal`, and `font-italic`. 
+
+### 6.12. Vertical Alignment
+For inline, inline-block, inline-table, and table cell elements, use `align-*` to chnge the vertical alignment. The options are `baseline`, `top`, `middle`, `bottom`, `text-top`, and `text-bottome. 
 
