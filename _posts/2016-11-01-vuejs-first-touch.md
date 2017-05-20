@@ -21,7 +21,7 @@ Vue uses component composition for building apps.
 ### 2.1. The Vue Instance
 A Vue instance is a ViewModel (vm) as in MVVM pattern. It has options such as data, template, element to mount on, methods, lifecycle callbacks and more. 
 
-A Vue instance proxies all the properties found in its `data` object. It has some properties and methods. It has some hooks at different stage of the instance's life. For example, `beforeCreate`, `created`, `beforeMount`, `mounted`, `beforeUpdated`, `updated`, `activated`, `beforeDestroy` and `destroyed`.  Vue proxies its `data` object properties between `beforeCreate` and `created`.  
+A Vue instance proxies all the properties found in its `data` object. It has some properties and methods. It has some hooks at different stage of the instance's life. For example, `beforeCreate`, `created`, `beforeMount`, `mounted`, `beforeUpdated`, `updated`, `activated`, `beforeDestroy` and `destroyed`.  Vue proxies its `data` object properties between th e`beforeCreate` and `created` stage.  
 
 ### 2.2. Template Syntax
 Components must contain exactly one root node. 
@@ -38,7 +38,7 @@ To rend the text only once and do not update on the following data changes, use 
 
 Use `v-bind` directive to dynamically bind one or more attributes, or a component prop to an expression. For example: `<img v-bind:src="imageSrc">`. The shorthand is `<img :src="imageSrc">`. 
 
-When used without an argument, it binds an object containing attribute name-value pairs. For example: `<div v-bind="{ id: someProp, 'other-attr': otherProp }"></div>`. 
+When used without an argument, it binds an object containing attribute name-value pairs. For example: `<div v-bind="{ 'id': someProp, 'other-attr': otherProp }"></div>`. 
 
 #### 2.2.2. Directives
 A directive is a special attribute that has a `v-` prefix. The directive attribute value shoud be a single JS expression. A directive can have arguments after a colon symbol, for example: `b-bind:href` or `v-on:click`. Modifiers are special postfix following a dot to modify the behavior. For example, `v-on:submit.prevent`. 
@@ -62,7 +62,7 @@ The difference between a computed property and a method is that the computed pro
 In most cases, computed properties are more appropriate than watchers. When there is a need to perform an asynchronous or expensive operation, a `watch` option is a better choice than the computed properties. 
 
 ### 2.4. Class and Style Bindings
-When `v-bind:class="classObject"` is used, all properties of the `classObject` are bind to the class attribute. Both the `:class="{ active: isActive, 'text-danger': hasError }"` and `:class="[activeClass, errorClass]"` are fine. The values of `activeClass` and `errorClass` are set as the class value. 
+When `v-bind:class="classObject"` is used, all properties of the `classObject` are bind to the class attribute. Both the `:class="{ active: isActive, text-danger: hasError }"` and `:class="[activeClass, errorClass]"` are fine. The values of `activeClass` and `errorClass` are set as the class value. 
 
 The same syntax can be used for inline styles with the `v-bind:sytle` directive. 
 
@@ -117,7 +117,7 @@ Components are custom elements that Vue attaches behavior to. They may be used a
 In root Vue instance, when use `el` option without `template`, the selected element with existing content will be compiled and mounted. Because the content is available after the HTML is parsed and normalized, there are some restrictions in its syntax. Using template inside `.vue` Components doesn't have the restrictions.   
 
 ### 3.2. Component `data`
-According to https://vuejs.org/v2/api/#data, the data property of a Vue instance can be an object (ok for the root Vue instance) or a function. In a component definition, the value MUST be a funciton that returns the initial object. The component will ignore the data option if it is not a funciton. When an instance is created from the component defintion, the data function should return a fresh copy of an initial object.
+According to https://vuejs.org/v2/api/#data, the `data` property of a Vue instance can be an object (only for the root Vue instance) or a function. In a component definition, the value MUST be a funciton that returns the initial object. The component will ignore the data option if it is not a funciton. When an instance is created from the component defintion, the data function should return a fresh copy of an initial object.
 
 The data object will be converted into a "reactive" one with its properties rewritten as getters/setters when an instance is created. The data object can be access as `vm.$data` and all its properties are proxied as vm propertie, therefore `vm.$data.myProp` is the same as `vm.myProp`. 
 
@@ -148,7 +148,7 @@ The API for a Vue components comes in three parts:
 ### 4.1. Component `props`
 A component has a `props` option. A prop is a custom attribute for passing information from parent component. The prop type can be specified as one or more (yes, multiple types are possible) of the following type: `String`, `Number`, `Boolean`, `Function`, `Object`, `Array`， a custom constructor function or a validtor function. For a custom constructor function, the assertion will be made with an `instanceof` check. When assertion fails, Vue produces a warning message.
 
-When passing values via props, all literals are treated as a string. Thus `<comp some-prop="37">` will pass a string "37" to `some-prop`. When using `v-bind`, the literals are evalated as a JavaScript expression. `<comp :some-prop="37">` will pass a number 37 to `some-prop`.
+When passing values via props, all literals are treated as a string. Thus `<comp some-prop="37">` will pass a string "37" to `some-prop`. When using `v-bind`, the literals are evalated as a JavaScript expression. `<comp :some-prop="37">` will pass a number 37 to `some-prop`. The `v-bind` makes the property reactive: when the JavaScript expression value changes, the property changes. 
 
 Props are one-way: from a parent to a child. When the parent data updates, it will flow down to the bound prop. 
 
@@ -182,8 +182,7 @@ The following code snippet showing the three ways a parent interacting with its 
   :foo="baz"
   :bar="qux"
   @event-a="doThis"
-  @event-b="doThat"
->
+  @event-b="doThat">
   <img slot="icon" src="...">
   <p slot="main-text">Hello!</p>
 </my-component>
@@ -192,4 +191,3 @@ The following code snippet showing the three ways a parent interacting with its 
 ## 5. Mixins
 A mixin object can contain any component optioins. When a component uses a mixin, all options in the mixin will be "mixed" into the component's own options. The component's options wil take priority when there are conflicting keys in mixing. 
 
-## 6. Plugins
