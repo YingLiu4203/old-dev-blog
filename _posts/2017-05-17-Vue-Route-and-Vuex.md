@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Vue and Vuex
+title: Vue, Vue-Router and Vuex
 categories:
 - Development
 tags:
@@ -100,7 +100,12 @@ The document is in https://vuex.vuejs.org/en/index.html
 
 Vue offeres a Flux-like state management tool called `vuex`. The source of truth in Vue applications is the raw `data` object. However, a global object doesn't scale and is hard to trace. Therefore, the store pattern is used to manage states by event dispatching and notification. 
 
-The idea behind vuex is that we put **shared states**  into a global singleton (called a store) and any component can access the state for rendering or dispatch actions to mutate states. 
+The idea behind vuex is that we put **shared states**  into a global singleton (called a store) and any component can access the state for rendering or dispatch actions to mutate states.  
+
+Using store including three steps
+* create a store: `const store = new Vuex.Store({...})`
+* register a store: `Vue.use(Vuex)); new Vue({ store, ...})`
+* use store in a component: `this.$store.state.myState`
 
 ### 4.1. State 
 Vuex uses a single state tree that can be splited into sub modules. In a component, use computed property to access states. 
@@ -114,6 +119,10 @@ Shared access functions can be defined as getters in the store and is exposed as
 ### 4.2. Mutations and Actions 
 The only way to mutate a state is by committing a mutation. A mutation has a string type and a handler. It might be helpful to use constants for mutation types. Mutations must be synchronous. There is a `mapMutations` helper to map store mutations to local methods. 
 
+Vuex mutations are subject to the same reactivity caveats when working with plain Vue:
+* Initialize store's initial state upfront.
+* When add new property to an object, either use `Vue.set()` or replace it with a new one `state.obj = {...state.obj, newProp: 123}`. 
+
 Actions commit mutations and can contain arbitrary asynchronous operations. Action handlers receive a context object which exposese the same set of methods/properties on the store instance. Use `mapActions` to map component methods to `store.dispatch` calls. Actions can be composed by using promise or async/await. 
 
 ### 4.3. Modules 
@@ -121,11 +130,9 @@ The global store can be divided into modules. Each module has its own state, mut
 
 For large project, use namespace when name actions, mutations or getters. 
 
-Use `store.registerModule` method for dynamic module registration. 
+Use `store.registerModule` and `store.unregisterModule` for dynamic module registration and unregistration. 
 
 ### 4.4. Form Handling
 There two methods to bind to a store states. 
-
 * Two-way Computed Property: use `v-model` and use `get()`, `set()` in a computed property.
 * Use `:value` and `@input` in binding. 
-
