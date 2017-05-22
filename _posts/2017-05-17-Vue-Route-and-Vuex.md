@@ -107,7 +107,7 @@ Using store including three steps
 * register a store: `Vue.use(Vuex)); new Vue({ store, ...})`
 * use store in a component: `this.$store.state.myState`
 
-### 4.1. State 
+### 3.1. State 
 Vuex uses a single state tree that can be splited into sub modules. In a component, use computed property to access states. 
 
 If a state belongs to a single component, it can be kept as a local state. 
@@ -116,7 +116,7 @@ Vuex injects the global store into all child components using the `store` option
 
 Shared access functions can be defined as getters in the store and is exposed as `store.getters` object. There is a `mapGetters` helper to share them as local computed propertes. 
 
-### 4.2. Mutations and Actions 
+### 3.2. Mutations and Actions 
 The only way to mutate a state is by committing a mutation. A mutation has a string type and a handler. It might be helpful to use constants for mutation types. Mutations must be synchronous. There is a `mapMutations` helper to map store mutations to local methods. 
 
 Vuex mutations are subject to the same reactivity caveats when working with plain Vue:
@@ -125,14 +125,20 @@ Vuex mutations are subject to the same reactivity caveats when working with plai
 
 Actions commit mutations and can contain arbitrary asynchronous operations. Action handlers receive a context object which exposese the same set of methods/properties on the store instance. Use `mapActions` to map component methods to `store.dispatch` calls. Actions can be composed by using promise or async/await. 
 
-### 4.3. Modules 
+### 3.3. Modules 
 The global store can be divided into modules. Each module has its own state, mutations, actions, getters and nested modules. Inside a module's mutations and getters, the first argument is its local state. 
 
 For large project, use namespace when name actions, mutations or getters. 
 
 Use `store.registerModule` and `store.unregisterModule` for dynamic module registration and unregistration. 
 
-### 4.4. Form Handling
-There two methods to bind to a store states. 
-* Two-way Computed Property: use `v-model` and use `get()`, `set()` in a computed property.
-* Use `:value` and `@input` in binding. 
+### 3.4. Form Handling
+There two scenarios to bind to a store states. 
+
+1. For a single form input field, use one of the following two methods 
+  * Two-way Computed Property: use `v-model` and use `get()`, `set()` in a computed property. Or
+  * Use `:value` and `@input` in binding. 
+2. For all form input fields, use three steps:
+  * Initialize a local data object with initial property values for all input fields. 
+  * Use `v-model` to bind prorperties to input fields.
+  * When submit changes, commit the local data object to store. 
