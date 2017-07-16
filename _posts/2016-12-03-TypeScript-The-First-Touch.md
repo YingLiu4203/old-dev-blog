@@ -182,6 +182,29 @@ An interface can extend other interfaces by copying their members into the new o
 
 An interface can extend a class type by inherits all the members of the class including prviated and protected members of the class. It means that the interface type can only be implemented by that class or a subclass of it. 
 
+## 3.5. Hybrid Types
+Some object can operation as both a function and an object. This is often used with 3rd-party code. 
+
+```ts
+interface Counter {
+    (start: number): string;
+    interval: number;
+    reset(): void;
+}
+
+function getCounter(): Counter {
+    let counter = <Counter>function (start: number) { };
+    counter.interval = 123;
+    counter.reset = function () { };
+    return counter;
+}
+
+let c = getCounter();
+c(10);
+c.reset();
+c.interval = 5.0;
+```
+
 # 4. Class
 
 ## 4.1. Class
@@ -251,6 +274,7 @@ Type compatibility is based on structural subtyping (also called duck typing). X
 For functions, TypeScript checks both parameters and the return type. For a function x to be assignable to a function y, each parameter in x must have a corresponding parameter in y with a compabile type and source's return type must be a subtype of the target's return type. 
 
 # 8. Iterator
+An object is iterable if it has an implementation for the `Symbol.iterator` property. Some built-in types like `Array`, `Map`, `Set`, etc. have this property implemented. 
 
 `for..of` statement returns a list of values over an iterated object. When targeting ES5 or ES3, only `Array` type is allowed.  
 
@@ -338,7 +362,6 @@ TypeScript has a set of flags to inform the compiler to resolve modules.
 * `baseUrl`: all non-relative names are assumed to be relative to the `baseUrl`.
 * `paths`: map a non-ralative name to a  path under `baseUrl`. There are can be multiple paths and `*` matches all names. 
 * `rootDirs`: it is a list of roots whose contents are expected to merge at run-time. For TypeScript, the files in those folders are in the same folder. 
-
 
 # 10. Declaration Files
 Since TypeScript 2.0, it's easy to download and consume declaration files. If a library has declaration file built-in, for example Vue, just run  `npm install -S vue`. If a library doesn't have built-in declaration file, for example, lodash, install its type by `npm install -S @types/lodash`.  
