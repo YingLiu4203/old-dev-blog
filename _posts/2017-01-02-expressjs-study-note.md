@@ -10,9 +10,9 @@ tags:
 This is a study note of the first two parts of the book [Express in Action](https://www.manning.com/books/express-in-action). 
 
 ## 1. Introduction
-Express is a framework that simplifies Node APIs, introduces a plugin framework and adds new functions such as routing and rendering.  
+Express is a routing + sugar layer on top of Node.js HTTP server that simplifies Node APIs. It introduces a plugin framework and adds new functions such as routing and rendering.  
 
-A middleware is a small request handler function in Express. These functions are chained in a pipeline. 
+A middleware is a small request handler function in Express. It has full access to the request and response parameters. These functions are chained in a pipeline. 
 
 Routing examines request method and URL to call different request handleer functions. 
 
