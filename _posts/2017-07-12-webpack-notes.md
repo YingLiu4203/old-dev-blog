@@ -99,7 +99,32 @@ Webpack has three chunk types: entry chunk, normal chunk and initial chunk. The 
 ## 5.3. Code Splitting
 Code splitting allows PRPL pattern: push critical resource for the initial routte, render initial router, pre-cache remaining routes, and lazy-load remaining routes on demand. 
 
-Webpack allows dynamic `import` syntax for both code and styles. Often use routing as good split points. 
+Webpack allows dynamic `import` syntax tha implements the currently under proposal ECMAScript `import()`. It takes a filename as an argument and returns a promise. 
+
+```ts
+Vue.component('async-component', (resolve) => {
+  import('./AsyncComponent.js')
+    .then((AsyncComponent) => {
+      resolve(AsyncComponent.default);
+    });
+});
+```
+
+Often use routing as good split points. For example: 
+
+```ts
+const Home = () => import(/* webpackChunkName: "home" */ './Home.vue');
+const About = () => import(/* webpackChunkName: "about" */ './About.vue');
+const Contact = () => import(/* webpackChunkName: "contact" */ './Contact.vue');
+
+const routes = [
+  { path: '/', name: 'home', component: Home },
+  { path: '/about', name: 'about', component: About },
+  { path: '/contact', name: 'contact', component: Contact }
+];
+```
+
+It's also possible to split within a page for the so-called "below the fold" sections. Conditionally visible components such as modal windows, tabs, dropdown menus etc. 
 
 ## 5.4. Tidying Up
 Use `clean-webpack-plugin` to clean the build output. 
@@ -124,3 +149,6 @@ By default, webpack put the build manifest in the generated bundle or the vendor
 The `--profile` and `--json` webpack options generate build information. 
 
 # 7. Output
+Output is set by the `target` field that can be `web`, `node`, `webworker`, `node-webkit`, `electron`, and etc. The default value is `web`. 
+
+There are several approaches to generate multiple pages: multi-compiler mode, single configuration, and others. Config `html-webpack-plugin` options such as `title`, `filename`, `template` and `entry` etc. for each page, 
