@@ -273,7 +273,7 @@ Then define the build scripts in `package.json` as the following:
 }
 ```
 
-In `tsconfig.json` we set `"module": "es2015",`. Unfortunately `ts-node` only understtand `commonjs` module importing and that is the reason we set `TS_NODE_COMPILER_OPTIONS` in the build script. 
+In `tsconfig.json` we set `"module": "es2015",`. Unfortunately `ts-node` only understtand `commonjs` module importing and that is the reason we set `TS_NODE_COMPILER_OPTIONS` in the build script. Furthmore, `tsconf.json` should NOT exlcue the `node_modules` for `ts-node` to work properly. 
 
 We also use `webpack-dev-server` to run the development build with hot reloading. 
 
