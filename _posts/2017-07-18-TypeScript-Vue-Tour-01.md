@@ -38,7 +38,7 @@ Then create `static/manifest.json` file with the following content:
 }
 ```
 
-With trhese resources ready, create the initial `index.html` in the project root folder following the PWA principles. It is also based on the above Google codelabs and has the following content: 
+With trhese resources ready, create the initial `index.html` in the project root folder following the PWA principles. The `/index.html` is used as a template whose content to be filled by Vue components. `webpack-dev-server` use the root level `index.html` as the entry html. Based on the above Google codelabs, it has the following content: 
 
 ```html
 <!DOCTYPE html>
@@ -275,7 +275,42 @@ In `tsconfig.json` we set `"module": "es2015",`. Unfortunately `ts-node` only un
 We also use `webpack-dev-server` to run the development build with hot reloading. 
 
 # 4. Make the First Run
-The last step is to use the webpack build output in the `/index.html` file.  Add `<script src="build.js"></script>` after the mounting element `<div id="app"></div>`. 
+To use the webpack build output in the `/index.html` file.  Add `<script src="build.js"></script>` after the mounting element `<div id="app"></div>`. 
 
-Use `npm run dev` to run the webpack dev server that serves the `/index.html` from project root. Go to http://localhost:8080/ to see the result. 
+Create the initial Vue component `/src/app.vue` with the following content: 
 
+```html
+<<template>
+    <div>
+        <h1>A Demo for PWA</h1>
+    </div>
+</template>
+
+<script lang="ts">
+import Vue from 'vue'
+import Component from 'vue-class-component'
+
+@Component({
+    name: 'app'
+})
+export default class App extends Vue {
+}
+
+</script>
+```
+
+It does nothing but display a message in <h1> tag. 
+
+Finally, create a `src/main.ts` to create the root Vue component. 
+
+```ts
+import Vue from 'vue'
+import App from './App.vue'
+
+export const vue = new Vue({
+    el: '#app',
+    render: (h) => h(App),
+})
+```
+
+Now use `npm run dev` to run the webpack dev server that serves the `/index.html` from project root. Go to http://localhost:8080/ to see the result. 
