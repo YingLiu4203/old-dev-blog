@@ -8,19 +8,17 @@ tags:
 ---
 
 # 1. The Plan
-This is the first part of a series of tours exploring progressive Web applciation (PWA) deveopmenet using TypeScript and Vue. The goal is to re-implemente the Google's exemplary Weather PWA described in https://developers.google.com/web/fundamentals/getting-started/codelabs/your-first-pwapp/. 
-
-To fully explore the concepts in both PWA and the develpment experience of TypeScript and Vue, we create everything from scratch except some obvious HTML, CSS, JavaScript code, and icon resources copied from the above example and other places. 
+This is the first part of a series of tours exploring progressive Web applciation (PWA) deveopmenet using TypeScript and Vue. To fully explore the concepts in both PWA and the develpment experience of TypeScript and Vue, we create everything from scratch except some obvious HTML, CSS, JavaScript code, and icon resources copied from other places. 
 
 # 2. The Initial Site Files
-As a start, create a static folder and copy icons and images from the Google Weather PWA repository to the `static/icons` and `static/images` folders. 
+As a start, create a static folder and copy icons and images from the Google's first PWA codelabs repository (https://github.com/googlecodelabs/your-first-pwapp) to the `static/icons` and `static/images` folders. 
 
 Then create `static/manifest.json` file with the following content: 
 
 ```json
 {
-    "name": "Weather PWA",
-    "short_name": "Weather",
+    "name": "Demo PWA",
+    "short_name": "Demo",
     "icons": [
         {
             "src": "/static/icons/icon-128x128.png",
@@ -40,7 +38,7 @@ Then create `static/manifest.json` file with the following content:
 }
 ```
 
-With trhese resources ready, create the initial `index.html` following the PWA principles. It has the following content: 
+With trhese resources ready, create the initial `index.html` in the project root folder following the PWA principles. It is also based on the above Google codelabs and has the following content: 
 
 ```html
 <!DOCTYPE html>
@@ -54,7 +52,7 @@ With trhese resources ready, create the initial `index.html` following the PWA p
     <!--  set viewport for mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Weather PWA</title>
+    <title>Demo PWA</title>
 
     <!-- Add to home screen for Android and modern mobile browsers -->
     <link rel="manifest" href="/static/manifest.json">
@@ -62,7 +60,7 @@ With trhese resources ready, create the initial `index.html` following the PWA p
     <!-- Add to home screen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Weather PWA">
+    <meta name="apple-mobile-web-app-title" content="Demo PWA">
     <link rel="apple-touch-icon" href="/static/icons/icon-152x152.png">
 
     <!-- Add to home screen for Windows -->
@@ -75,15 +73,15 @@ With trhese resources ready, create the initial `index.html` following the PWA p
         Please enable JavaScript to see the content.
     </noscript>
 
+    <!-- mount element for the Vue root component-->
     <div id="app"></div>
-    <!-- built files will be auto injected -->
 </body>
 
 </html>
 ```
 
 # 3. Setup Development Enviornment
-Unlike Google's original example, we use Nodejs as the backend server. We use npm and webpack to manage the build process. 
+We use Nodejs as the backend server. We use npm and webpack to manage the build process. 
 
 ## 3.1. Configure TypeScript and TSlint
 Create the TS configuration file `tsconfig.json` in the project root directory. 
@@ -150,37 +148,134 @@ To use TSlint, install the VSCode TSLint extension. Then use `npm i -g tslint` t
 Use `npm init` to create an initial `package.json` file in the project root. Then install the following packages: 
 
 ```sh
+# vue, typescript and TS component decorator
 npm i -S vue
-npm i -D typescript
+npm i -D typescript vue-class-component
 
-# use the vue class decorator
-npm i -D vue-class-component
-
-# for node and express
+# for node types
 npm i -D @types/node
-npm i -S express @types/express
+# use to set env variabvles in config.json
+npm i -D cross-env
 
 # webpack and its tools
-npm i -D webpack
-npm i -D @types/webpack
-npm i -D webpack-dev-server
-npm i -D webpack-merge
+npm i -D webpack @types/webpack
 
+# following are packages used by webpack
 # use TypeScrit to config webpack
 npm i -D ts-node
 
-# packages used by webpack
-npm i -D file-loader url-loader css-loader
-npm i -D vue-loader vue-style-loader
-npm i -D ts-loader
+# webpack tools
+npm i -D webpack-dev-server webpack-merge
 
-# peer dependence of the following two packages
-npm i -D vue-template-compiler
-# extract entry chunk *.css to a separate file for parallel loading
-npm i -D extract-text-webpack-plugin
+# css-loader and vue-template-compiler are peer dependencies of vue-loader
+npm i -D css-loader vue-template-compiler 
+npm i -D vue-loader ts-loader
 # webpack debug info
 npm i -D friendly-errors-webpack-plugin
 
 ```
 
 ## 3.3. Config webpack
+The `ts-node` installed in the previous section allows us to use TS code in webpack config. Because there are different settings for production and devlopment build processes, we put the common config settings in `build/webpack.config.base.ts` file. Development-specific settings are put in `build/webpack.config.dev.ts` and production setting are in `build/webpack.config.prod.ts`.  
+
+### 3.3.1. Basic Configuration
+The basic webpack configuration includes `entry`, `output` and rules for TS and Vue loaders. Following is the content of `buiild/webpack.config.base.ts`: 
+
+```ts
+import * as path from 'path'
+import * as webpack from 'webpack'
+
+const resolve = (dir: string) => path.join(__dirname, '..', dir)
+
+const config: webpack.Configuration = {
+    entry: './src/main.ts',
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: {
+                    loader: 'ts-loader',
+                    options: {
+                        appendTsSuffixTo: [/\.vue$/],
+                    },
+                },
+            },
+            {
+                test: /\.vue$/,
+                use: 'vue-loader',
+            },
+        ],
+    },
+    output: {
+        filename: 'build.js',
+        path: resolve('dist'),
+        publicPath: '/dist/',
+    },
+}
+
+export default config
+```
+
+We use the the webpack 2 configuration syntax. The only trick is the `appendTsSuffixTo: [/\.vue$/]` option for `ts-loader`. This rule appens a `.ts` postfix to al `.vue` thus the Vue component files can be processed by `ts-loader`. 
+
+For the development config `buiild/webpack.config.dev.ts`, we add source map and a fiendly webpack error report plugin. 
+
+```ts
+
+import * as webpack from 'webpack'
+import webpackConfig from './webpack.config.base'
+
+/* tslint:disable:no-var-requires */
+const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
+const merge = require('webpack-merge')
+/* tslint:enable:no-var-requires */
+
+const config = merge(webpackConfig, {
+    // cheap-module-eval-source-map is faster for development
+    devtool: '#cheap-module-eval-source-map',
+    plugins: [
+        new FriendlyErrorsPlugin(),
+    ],
+} as webpack.Configuration)
+
+export default config
+
+```
+
+For the product build `buiild/webpack.config.prod.ts`, we just disable the source map: 
+
+```ts
+import * as webpack from 'webpack'
+
+import webpackConfig from './webpack.config.base'
+
+/* tslint:disable:no-var-requires */
+const merge = require('webpack-merge')
+/* tslint:enable:no-var-requires */
+
+const config = merge(webpackConfig, {
+    devtool: false,
+} as webpack.Configuration)
+
+export default config
+```
+
+Then define the build scripts in `package.json` as the following: 
+
+```json
+ "scripts": {
+    "dev": "cross-env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\"}' webpack-dev-server --hot --inline  --config build/webpack.config.dev.ts",
+    
+    "build": "cross-env NODE_ENV=production TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\"}' webpack --config build/webpack.config.prod.ts"
+}
+```
+
+In `tsconfig.json` we set `"module": "es2015",`. Unfortunately `ts-node` only understtand `commonjs` module importing and that is the reason we set `TS_NODE_COMPILER_OPTIONS` in the build script. 
+
+We also use `webpack-dev-server` to run the development build with hot reloading. 
+
+# 4. Make the First Run
+The last step is to use the webpack build output in the `/index.html` file.  Add `<script src="build.js"></script>` after the mounting element `<div id="app"></div>`. 
+
+Use `npm run dev` to run the webpack dev server that serves the `/index.html` from project root. Go to http://localhost:8080/ to see the result. 
+
