@@ -41,7 +41,7 @@ new CleanWebpackPlugin([resolve('dist')])
 ```
 
 # 1.2. Extract Vendor Modules and Webpack Manfiest
-Add the following content to the `plugins` section in `build/webpack.config.base.ts` to extract vendor modules and webpack manifest into seprate bundles. 
+Add `CommonsChunkPlugin` to the `plugins` section in `build/webpack.config.base.ts` to extract vendor modules. 
 
 ```ts
 // split vendor js into its own file
@@ -58,6 +58,11 @@ new webpack.optimize.CommonsChunkPlugin({
         )
     },
 }),
+```
+
+Passing `minChunks: Infinity` to `CommonsChunPlugin` creates a commons chunk without modules. The named chunk has webpack runtime and manifest.
+
+```ts
 // extract webpack runtime and module manifest to its own file in order to
 // prevent vendor hash from being updated whenever app bundle is updated
 new webpack.optimize.CommonsChunkPlugin({
@@ -67,4 +72,29 @@ new webpack.optimize.CommonsChunkPlugin({
 })
 ```
 
-Because there are multiple bundles, set `filename: '[name].js'` in the `output` field. 
+Because there are multiple bundles, set `filename: '[name].js'` in the `output` field. Now the build output has four files: `index.html`, `main.js`, `manifest.js` and `vendor.js`. 
+
+# 2. Add Styles
+Change the `<template>` section of `src/App.vue` to have the following content: 
+
+```html
+<div id="app">
+    <img src="./assets/logo.png" alt="Vue.js PWA">
+    <h1>A Demo for PWA</h1>
+</div>
+```
+
+Copy the styles from the `src/App.vue` of the `vue-cli` WPA template to the `<style>` section of `src/App.vue`. If you run `npm run dev`, it fails because webpack doesn't know how to handle the image file `./assets/logo.png`. `url-loader` and `file-loader` are two loaders commonly used to load assets.  Install them with `npm i -D url-loader file-loader` and add the following config to the `module: rules` section in `/build/webpack.base.config.ts`: 
+
+```ts
+{
+    test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+    loader: 'url-loader',
+    options: {
+        limit: 10000,
+        name: 'static/img/[name].[hash:7].[ext]',
+    }
+},
+```
+
+
