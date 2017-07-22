@@ -8,37 +8,19 @@ tags:
 ---
 
 # 1. The Plan
-This is the first part of a series of tours exploring progressive Web applciation (PWA) deveopmenet using TypeScript and Vue. To fully explore the concepts in both PWA and the develpment experience of TypeScript and Vue, we create everything from scratch except some obvious HTML, CSS, JavaScript code, and icon resources copied from other places. 
+This is the first part of a series of tours exploring progressive Web applciation (PWA) deveopmenet using TypeScript and Vue. To fully explore the concepts in both PWA and the develpment experience of TypeScript and Vue, we create everything from scratch except some obvious code/resources copied from `vue-cli` templates. 
 
 # 2. The Initial Site Files
-As a start, create a static folder and copy icons and images from the Google's first PWA codelabs repository (https://github.com/googlecodelabs/your-first-pwapp) to the `static/icons` and `static/images` folders. 
+First use `vue-cli` to scaffold a project, we use some static resources from the project. 
 
-Then create `static/manifest.json` file with the following content: 
-
-```json
-{
-    "name": "Demo PWA",
-    "short_name": "Demo",
-    "icons": [
-        {
-            "src": "/static/icons/icon-128x128.png",
-            "sizes": "128x128",
-            "type": "image/png"
-        },
-        {
-            "src": "/static/icons/icon-256x256.png",
-            "sizes": "256x256",
-            "type": "image/png"
-        }
-    ],
-    "start_url": "/index.html",
-    "display": "standalone",
-    "background_color": "#3E4EB8",
-    "theme_color": "#2F3BA2"
-}
+```sh
+npm i -g vue-cli
+vue init pwa vue-template
 ```
 
-With trhese resources ready, create the initial `index.html` in the project root folder following the PWA principles. The `/index.html` is used as a template whose content to be filled by Vue components. `webpack-dev-server` use the root level `index.html` as the entry html. Based on the above Google codelabs, it has the following content: 
+Then copy the `./vue-template/static` and `./vue-template/src/assets` folders to our project's `/static` and `/src/assets` folder.
+
+Also based on the above template project, create the initial `index.html` in the project root folder with the following content: 
 
 ```html
 <!DOCTYPE html>
@@ -54,18 +36,19 @@ With trhese resources ready, create the initial `index.html` in the project root
 
     <title>Demo PWA</title>
 
+    <!--[if IE]><link rel="shortcut icon" href="/static/img/icons/favicon.ico"><![endif]-->
     <!-- Add to home screen for Android and modern mobile browsers -->
     <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#4DBA87">
 
     <!-- Add to home screen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Demo PWA">
-    <link rel="apple-touch-icon" href="/static/icons/icon-152x152.png">
-
+    <meta name="apple-mobile-web-app-title" content="vuewp">
+    <link rel="apple-touch-icon" href="/static/img/icons/apple-touch-icon-152x152.png">
     <!-- Add to home screen for Windows -->
-    <meta name="msapplication-TileImage" content="/static/icons/icon-144x144.png">
-    <meta name="msapplication-TileColor" content="#2F3BA2">
+    <meta name="msapplication-TileImage" content="/static/img/icons/msapplication-icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#000000">
 </head>
 
 <body>
@@ -112,7 +95,7 @@ Create the TS configuration file `tsconfig.json` in the project root directory.
 }
 ```
 
-As explained in https://stackoverflow.com/questions/42058620/how-to-work-with-typescript-in-vue-files-using-vs-code, to import `"*.vue"` file in TS code, we need to create a custom type definition `typings/vue.d.ts` with the following content: 
+As explained in https://stackoverflow.com/questions/42058620/how-to-work-with-typescript-in-vue-files-using-vs-code, to support `"*.vue"` file in VSCode, we need to create a custom type definition `typings/vue.d.ts` with the following content: 
 
 ```ts
 declare module '*.vue' {
