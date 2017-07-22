@@ -139,6 +139,9 @@ To use TSlint, install the VSCode TSLint extension. Then use `npm i -g tslint` t
         ],
         "semicolon": [
             "never"
+        ],
+        "object-literal-sort-keys": [
+            false
         ]
     }
 }
