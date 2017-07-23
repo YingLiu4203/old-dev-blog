@@ -74,14 +74,19 @@ new webpack.optimize.CommonsChunkPlugin({
 
 Because there are multiple bundles, set `filename: '[name].js'` in the `output` field. Now the build output has four files: `index.html`, `main.js`, `manifest.js` and `vendor.js`. 
 
-# 2. Add Styles
+# 2. Add Assets and Styles
 Change the `<template>` section of `src/App.vue` to have the following content: 
 
 ```html
 <div id="app">
-    <img src="./assets/logo.png" alt="Vue.js PWA">
-    <h1>A Demo for PWA</h1>
-</div>
+        <header>
+            <span>Vue.js PWA</span>
+        </header>
+        <main>
+            <img src="./assets/logo.png" alt="Vue.js PWA">
+            <h1>A demo for PWA</h1>
+        </main>
+    </div>
 ```
 
 Copy the styles from the `src/App.vue` of the `vue-cli` WPA template to the `<style>` section of `src/App.vue`. If you run `npm run dev`, it fails because webpack doesn't know how to handle the image file `./assets/logo.png`. `url-loader` and `file-loader` are two loaders commonly used to load assets.  Install them with `npm i -D url-loader file-loader` and add the following config to the `module: rules` section in `/build/webpack.base.config.ts`: 
@@ -93,8 +98,22 @@ Copy the styles from the `src/App.vue` of the `vue-cli` WPA template to the `<st
     options: {
         limit: 10000,
         name: 'static/img/[name].[hash:7].[ext]',
-    }
+    },
 },
 ```
+
+The `url-loader` will encode and inline the images whose sizes are below 10000 bytes. For images bigger than the limit, `file-loader` will put the files in the `/dist/static/img/` folder with the image name, 7 hex hash number and file extention. 
+
+`vue-loader` uses `vue-style-loader` internally to process embedded styles. To extract styles into a separate file, run `npm i -D extract-text-webpack-plugin` and add the following config: 
+
+```ts
+const ExtractTextPlugin = require("extract-text-webpack-plugin")
+
+// inside plugins: []
+new ExtractTextPlugin("style.css"),
+```
+
+It extracts all styles into `/dist/style.css` file and refers to it in the `<head>` tag of `index.html`.
+
 
 
