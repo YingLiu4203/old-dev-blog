@@ -37,7 +37,11 @@ To clean up build result before each build process, run `npm i -D clean-webpack-
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 // in the plugins section
-new CleanWebpackPlugin([resolve('dist')])
+new CleanWebpackPlugin(
+    ['dist'],
+        // the default root is the current folder, correct it
+    { root: path.join(__dirname, '..')},
+),
 ```
 
 # 1.2. Extract Vendor Modules and Webpack Manfiest
@@ -104,16 +108,10 @@ Copy the styles from the `src/App.vue` of the `vue-cli` WPA template to the `<st
 
 The `url-loader` will encode and inline the images whose sizes are below 10000 bytes. For images bigger than the limit, `file-loader` will put the files in the `/dist/static/img/` folder with the image name, 7 hex hash number and file extention. 
 
-`vue-loader` uses `vue-style-loader` internally to process embedded styles. To extract styles into a separate file, run `npm i -D extract-text-webpack-plugin` and add the following config: 
+`vue-loader` uses `vue-style-loader` internally to process embedded styles. Run `npm run dev` to see the styles work as expected. 
 
-```ts
-const ExtractTextPlugin = require("extract-text-webpack-plugin")
+# 3. Create a Dev Server
 
-// inside plugins: []
-new ExtractTextPlugin("style.css"),
-```
-
-It extracts all styles into `/dist/style.css` file and refers to it in the `<head>` tag of `index.html`.
 
 
 
