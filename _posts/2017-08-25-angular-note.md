@@ -91,12 +91,33 @@ Two-way | `[(target)]="expression"` `bindon-target="expression"` | Two-way
 
 Binding types other than interpolation have a target name to the left of the equal sign, either surrounded by punctuation (`[]`, `()`, `[()]`) or preceded by a prefix (`bind-`, `on-`, `bindon-`) for so-called `canonical form`. Binding target name is the name of a property of an element, component or directive. 
 
-For the target name, Angular first looks in directive inputs, then element properties. If you omit the brackets in a plain target name, i.e., without the `bind-`/`on-`/`bindon-` prefix, the template expression is treated as a string literal. You can use this syntax to set constant string value to a property. 
+For the target name of property and event, Angular first looks in directive inputs, then element properties. If you omit the brackets in a plain target name, i.e., without the `bind-`/`on-`/`bindon-` prefix, the template expression is treated as a string literal. You can use this syntax to set constant string value to a property. 
 
 Angular data binding sanitizes the expression before displaying them. 
 
-In very few cases, for example, ther is no element properties for an HTML attribute such as `ARIA`/`SVG`/`colspan`, the target could be 
+In very few cases, for example, ther is no element properties for an HTML attribute such as `ARIA`/`SVG`/`colspan`, the target could be one of the following: 
 
 * an attribute `[attr.attributename]`: `<button [attr.aria-label]="help">help</button>` 
 * a class `[class]` for replacement or `[class.classname]` for adding the name when expression is true: `<div [class.special]="isSpecial">Special</div>`
 * a style `[style.stylename]`: `<button [style.color]="isSpecial ? 'red' : 'green'">`
+
+In event binding, the expression statement can access the `$event` object. It could be a DOM event object if the event is a native DOM element event. It has properties such as `$event.target` and `$event.target.value`. 
+
+If the event belongs to a directive, `$event` type is defined by the directive. A directive typically defines a property that is an instance of `EventEmitter<EventType>` and raises a custom event using `EventEmitter.emit(payload)`. 
+
+Three built-in attribute directives are `ngModel`, `ngClass`, and `ngStyle`.
+The `[(x)]=expression` is a syntactic suguar of `[x]=expression (xChange)="expression=$event"`. HTML elements like `<input>` and `<select>` don't follow this pattern, for those elements, the Angular `NgModel` directive enables two-way binding of a property. `ngModel` requires importing of `FormsModule` from `@angular/forms`. Elements supporting `ControlValueAccessor` can be used with `ngModel`. `ngModel` has an expanded form like `[ngModel]="setAssignment" (ngModelChange)="eventHandler($event)"`. 
+
+Using `[class.key]="exporession"` to add or remove a single class. Binding `ngClass` to a control object that has a set of `key: value` pairs to add/remove the class named by the `key`.  
+
+Using `[style.key]="expression"` to add or remove a single style. Use `ngStyle` for multiple styles. 
+
+Three built-in structural directives are `*ngIf`, `*ngFor`, and `*ngSwitch`.
+
+* `*ngIf`: comes with `index`. To avoid refresh all when there is a small change, use `traceBy: trackMethod`. 
+* `ngSwitch`, `*ngSwitchCase`, `*ngSwitchDefault`.
+
+## 2.4. Template Reference Variable, Input and Output
+A template reference variable is a reference to a DOM element, an Angular component or a directive within a template. Use `#variableName` or `ref-variabvleName` to declare a referecne variable. The variable can be used anywhere in the template. Usually the reference variable's value is the DOM element. However, a directive such as `ngForm` can set a different value. 
+
+Binding target properties have to be identified explicitly as inputs and outpus. You can specify an input/output property either with a decorator `@Input(alias)`, `@Output(alias)` or in a metadata array `inputs: ['prop: alias`]` or `outputs: []`, but not both. The `alias` is optional. 
