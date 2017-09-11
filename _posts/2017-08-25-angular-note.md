@@ -200,3 +200,17 @@ Use `<ng-container>` when there is no single element to host the directive. For 
 The `<ng-container>` is a syntax element recognized by the Angular parser. It's not a directive, component, class, or interface. It's more like the curly braces in a JavaScript `if-block`. 
 
 `TemplateRef` refers to the embedded template of the structural directive. Use `ViewContainerRef.createEmbeddedView(this.tremplateRef)` to creat the embedded view. 
+
+# 8. Pipe
+
+Pipe has a syntax of `someValue | pipeName : para1 : para2`. 
+
+To define a pipe, use `@Pipe({name: 'pipeName'})` to define pipe meta data. The pipe class should implement `PipeTransform` interface that defines a `transform(value, ...)` method that returns transformed value. You must include the pipe in the `declarations` array of the `AppModule`. 
+
+When use a pipe with an array, Angular doesn't detect change inside the array. Replacing the whole array to enable change detection when the array is an input to a pipe. 
+
+By default, a pipe is pure. Angular executes a pure pipe only when it detects a pure change to the input value. A pure change means a changed primitive value or a changed object reference. Pure change detection is simple and fast.
+
+When you set `pure: false` in `@Pipe()` meta data, the pipe becomes an impure pipe. Angular executes an impure pipe during every component change detection cycle, for every keystroke or mouse-move. 
+
+`AsyncPipe` is an impure pipe. 
