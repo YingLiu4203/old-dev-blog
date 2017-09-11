@@ -60,7 +60,7 @@ Structural directives alter layout by adding, removing, and replacing elements i
 ## 1.7. Dependency Injection
 DI use injectors to supply a new instance of a class with the fully-formed dependencies it requires. Most dependencies are services. An injector maintains a container of service instances that it creates. Angular uses the types of a constructor parameters for injection. Usually add providers to the root module so that same instance of a service is available everywhere. Alternatively, register a service in the `providers` property of the `@Component` metadata. 
 
-# 2. Template & Data Binding
+# 2. Template Syntax
 ## 2.1. Template Expression
 Angular uses interpolation `{{...}}` to insert calculated strings. The text between the braces is a `template expression`. Angular executes the expressions and assigns the result to a property of a binding target. The target might be an HTML element, a component, or a directive. Most JS expressions are legal template expressions, but not all. Expressions such as assignment, `new`, chaining expressions of `;` and `,`, `++`, `--`, bitwise operators `|` and `&`. 
 
@@ -121,3 +121,82 @@ Three built-in structural directives are `*ngIf`, `*ngFor`, and `*ngSwitch`.
 A template reference variable is a reference to a DOM element, an Angular component or a directive within a template. Use `#variableName` or `ref-variabvleName` to declare a referecne variable. The variable can be used anywhere in the template. Usually the reference variable's value is the DOM element. However, a directive such as `ngForm` can set a different value. 
 
 Binding target properties have to be identified explicitly as inputs and outpus. You can specify an input/output property either with a decorator `@Input(alias)`, `@Output(alias)` or in a metadata array `inputs: ['prop: alias`]` or `outputs: []`, but not both. The `alias` is optional. 
+
+# 3. Lifecyle Hooks
+After creating a component/directive by calling its constructor, Angular calls the lifecycle hook metehods in the following sequence. 
+
+Hook | Purpose | Timing
+--- | --- | ---
+`ngOnChanges()` | Respond when Angular (re)sets data-bound input properties. The method receives a `SimpleChanges` object of current and previous property values. | Called before `ngOnInit()` and whenever one or more data-bound input properties change. 
+`ngOnInit()` | Initialize the component/directive after Angular first displays the data-bound properties and sets input properties. | Called once, after the first `ngOnChanges()`.
+`ngDoCheck()` | Detect and act upon changes that Angular can't or won't detect on its own. | Called during every change detection run, immediately after `ngOnChanges()` and `ngOnInit()`. 
+`ngAfterContentInit()` | Respond after insertion of external content. | Called once after the first `ngDoCheck()`.
+`ngAfterContentChecked()` | Respond after Angular checks the content projected into the component. | Called after the first `ngAfterContentInit()` and every subsequent `ngDoCheck()`. 
+`ngAfterViewInit()` | Respond after Angular initializes the component's view and child views. | Called once after the first `ngAfterContentChecked()`. 
+`ngAfterViewChecked()` | Respond after Angular checks view. | Called after the `ngAfterViewInit()` and everyh subsequent `ngAfterContentChecked()`.
+`ngOnDestroy()` | Cleanup just before Angular destroys the component/directive. Usued to unsbuscribe observalbes and detach event handlers. | Called just beofere Angular destroys the component/directive. 
+
+A directive only has `ngOnChanges()`, `ngOnInit()`, `ngDoCheck()` and `ngOnDestroy()`. Angular defines an interface (without `ng` prefix) for each lifecycle hooks. Interfaces are optional in component/directive implementation, the hook methods matter. 
+
+# 4. Component Interaction
+Two or more components can communicate with each other using the following mechanisms: 
+
+* Pass data from parent to child with input binding.
+* Child intercepts input property changes with a setter.
+* Child intercepts input property changes via `ngOnChanges()` hook. 
+* Parent listens for child event. 
+* Parent access child's methods and properties via template reference variable for the child element. All access must be done within the parent template. 
+* Parent defines a `@ViewChild(ChildComponent)` to access child component properties and metehods in the parent component. 
+* Parent and children communicate via a service. The scope of a service instance is the parent component and its children. 
+
+# 5. Component Styles
+The component styles apply only within the template of the component. There are some speical selectors: 
+
+* `:host(optional-condition)`:  a pseudo-class selector to target styles in the element that hosts the component. 
+* `:host-context(optional-condition)`: to target styles in ancestors. 
+
+There are three view encapsulation modes: 
+
+* `Native`: use a browser's native shadow DOM implementation. Only works on a supported browsers. 
+* `Emulated`: this is the default mode used by Angular. 
+* `None`: means no view encapsultaion. All styles are global. 
+
+# 6. Dynamic Components
+`<ng-template>` element doesn't reander any output therefore it's a good choice for dynamic component. Angular replaces the `<ng-template>` and its contents with a comment.
+
+Use `ComponentFactoryResolver` to resolve a `ComponentFactory` for a component. Then use `ViewContainerRef.createComponent()` to create a new component. 
+
+To ensure that the compiler generates a factory, add dynamically loaded components to the `NgModule`'s `entryComponents` array. 
+
+# 7. Directives
+Angular has three types of directives: structural directives that change the DOM layout; attribute directives that change the appearance or behavior of an element, component, or another directive; components that are directives with a template. 
+
+## 7.1. Attribute Directives
+You often use `@Directive`, `ElementRef` and `@Input` to implement a directive. 
+
+`@Directive` takes an object that contains metadata. A mandatory metadata is `selector` that identifies the template element associated with the directive. Angular creates a new instance of the directive's controller class for each matching element, injecting an Angular `ElementRef` into the constructor. The `ElementRef` the the matching DOM element. 
+
+The `@HostListener('eventName')` decorator lets you subscribe to events of the DOM element that hosts an attribute directive. 
+
+By using the same name of `selector: 'name'` metadata and `@Input(alias)`, only one attribute name is required in applying directive and its property.
+
+## 7.2. Structural Directives
+A structural directive has no brackets, no parentheses, just an asterisk `*` precedes the name. The asterisk is a **convenience notation** and the name string is a **microsyntax**. 
+
+The `*directiveName` is a sugar syntax of `<ng-template directiveName ... ></ng-tempalte>`. 
+
+The `microsyntax` lets your configure a directive in a compact, friendly string that is translated into attributes of `<ng-template>`. 
+
+* The `let` keyword declares a template input variable. 
+* The `of` and `trackby` are title-cased and prefixed with the directive's attribute name (`ngFor`) to generate `ngForOf` and `ngForTrackBy`, two input properties. 
+* `NgFor` directive class sets and resets properties (`index`, `odd`, `$implicit`) of its context object. The `$implicity` is the loop value. 
+
+For simplicity, Angular enforces that one structural directive for a host element. 
+
+The `NgSwitch` is not a structural directive. It's an attribute directive that controls the behavior of `NgSwitchCase` and `NgSwitchDefault`. 
+
+Use `<ng-container>` when there is no single element to host the directive. For example, to avoid style issues or an element requires child element be of a specific type. 
+
+The `<ng-container>` is a syntax element recognized by the Angular parser. It's not a directive, component, class, or interface. It's more like the curly braces in a JavaScript `if-block`. 
+
+`TemplateRef` refers to the embedded template of the structural directive. Use `ViewContainerRef.createEmbeddedView(this.tremplateRef)` to creat the embedded view. 
