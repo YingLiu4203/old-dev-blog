@@ -45,6 +45,8 @@ The component class creates and manipulates form control objects that allow imme
 
 In reactive forms, the data model is immutable. Changes in UI are handled by exteranl services that always create a new data model. In template forms, form control objects are created by Angular directives and changes are made to mutable component class properties via `ngModel`. `ngModel` is not used in reactive forms. To avoid "changed after checked" errors, directives take more cyucles to build the control tree, therefore template forms are aynchronous. You need to wrap tests  in `async()` or `fakeAsync()` to get values. 
 
+A nice thing of Angular reactive form is its ability to build forms dynamically from metadata. 
+
 ## 3.2. Core Reactive Form Classes
 There are four core reactive form classes: 
 * `AbstractControl` is the abstract base class for other three.
@@ -70,5 +72,12 @@ When save changes to data model, get data from form model and call a service.
 To revert (cancel) changes, just re-execute `ngOnChanges` that build form model from the original input data model. 
 
 # 4. Form Validation
+## 4.1. Template Form Validation
+You use native HTML form validation attributes to specify validation criteria. Angular uses directives to match these attributes with Angular's form validator functions. For example, an `<input>` element has native `required`, `minlength` validation attributes. You can create custom validator directive. 
 
-# 5. Dynamic Form
+Every time a value of a form control changes, Angular runs validation and generate either a list of validation errors or null. It also sets the `INVALID` and `VALID` status. 
+
+## 4.2. Reactive Form Validation
+You add validator functrions directly to the form control model in the component class. Validators can be sync or async. For better performance, Angular runs async validators only after all sync validators pass. There are some built-in validators (available as directive for template forms): `min, max, required, eamil, minLength, maxLength, pattern, nullValidator`. 
+
+You can create a custom validator. 
