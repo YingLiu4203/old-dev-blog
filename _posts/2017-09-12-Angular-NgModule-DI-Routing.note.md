@@ -87,3 +87,58 @@ const provideParent =
 It uses `forwardRef` to break cicular reference. 
 
 Use `@SkipSelf` to skip itself in searching a service. 
+
+# 6. Routing
+## 6.1. Basics
+If the `app` folder is the application root, set `<base href="/">` as the first child in `<head>` tag in `index.html`. It's a prerequsite to use `history.pushState`. 
+
+An Angular application has a singleton instance of the `Router` service. Import `RouterModule.forRoot(routes)` to config routes in the root module. Adding `{ enableTracing: true }` as the 2nd argument of `forRoot` method enables router event tracing. 
+
+Each route maps a URL path to a component. There are no leading slashes in the path. Use `somePath/:param` to set a route parameter. Use `data` property to store arbitrary read-only static data associated with a specific route. 
+
+The empty path `""` represents the default path, i.e., when the path in the URL is empty. You can set `redirectTo: '/defaultPath` and `PathMatch: 'full'` to map it to an existing path. The `**` path is a wildcard. The order of the routes matters because the match strategy is first-match wins. More specific routes should be placed above less specific routes. 
+
+The `<router-outlet></router-outlet>` in a template is the place for matched component. Use `<a routerLink="/path" routerLinkActive="active">` to navigate to a path. The `RouterLinkActive` directive adds `"active" CSS class to the element when the router link is active. This directive can be added to the anchor or its parent element. 
+
+After the end of a successful navigation lifecycle, the router builds a tree of `ActivatedRoute` objects that make up the current state of the router. `ActivatedRoute` is a service that is provided to each route component that contains route specific information such as route parameters, static data, resolve data, global query params, and the global fragment.
+
+Use the `routerState` property of the `Router` service to access the current state. The  current state of the router including a tree of the currently activated routes together with convenience methods for traversing the route tree.
+
+An Angular component with a RouterOutlet that displays views based on router navigations is called a `routing component`. 
+
+The `Router` emits many events during a navigation. They are `NavigationStart`, `RoutesRecognized`, `RouteConfigLoadStart`, `RouteConfigLoadEnd`, `NavigationEnd`, `NavigationCancel`, and `NavigationError`. 
+
+When subscribing to an observable in a component, you almost always arrange to unsubscribe when the component is destroyed. There are a few exceptional observables where this is not necessary. The ActivatedRoute observables are among the exceptions. The ActivatedRoute and its observables are insulated from the Router itself. The Router destroys a routed component when it is no longer needed and the injected ActivatedRoute dies with it. Feel free to unsubscribe anyway. It is harmless and never a bad practice.
+
+When a component is not reused, i.e., is created everytime it is accessed for sure, you can use `route.snapshot` to avoid subscribing to `paraMap`. 
+
+A router's parameter can be required or optional. In general, prefer a required route parameter when the value is mandatory (for example, if necessary to distinguish one route path from another); prefer an optional parameter when the value is optional, complex, and/or multivariate.
+
+Use `this.router.navigate(['/heroes', { id: heroId, foo: 'foo' }]);` to navigate to a different path. If the path doesn't define parameters, the navigation generates a path like `localhost:3000/heroes;id=15;foo=foo` that is a matrix URL notation. 
+
+To navigate a relative path with the `Router.navigate` method, you must supply the ActivatedRoute to give the router knowledge of where you are in the current route tree. After the link parameters array, add an object with a relativeTo property set to the ActivatedRoute. The router then calculates the target URL based on the active route's location.
+
+When using a RouterLink to navigate instead of the Router service, you'd use the same link parameters array, but you wouldn't provide the object with the `relativeTo` property. The ActivatedRoute is implicit in a RouterLink directive.
+
+Angular uses secondary routes and named outlets to have multiple outlets in a template.  The router can keep track of multiple branches in a navagition tree and generating a representation of that tree in the URL like `http://.../heroes(popup:compose)`. The string in parentheses consists of outlet name and path. Each secondary outlet has its own navigation, independent of the navigation driving the primary outlet. Changing a current route that displays in the primary outlet has no effect on the popup outlet.
+
+You can inspect the router's current configuration any time by injecting it and examining the `router.config` property.
+
+## 6.2. Route Guards
+You use route guard to allow or deny navigation to a target, to fetch some data, or to take action when leave a component. If a guard returns true, the navagition proceeds, otherwise, the navigation stops and the user stays put. A guard can also navigate to a different route. The guard might be async or sync with a type of `Observable<boolean> | Promise<boolean> | boolean`. The router supports multiple guard interfaces: 
+* `CanActivate` to mediate navigation to a route
+* `CanActivateChild` to mediate navigation to a chilid route
+* `CanDeactivate` to mediate navigation away
+* `Resolve` to retrieve route data before route activation
+* `CanLoad` to mediate navigation to a feature module loaded asynchronously
+
+Use a component-less route to group and guard child routes. The Router supports empty path routes; use them to group routes together without adding any additional path segments to the URL.
+
+A better user experience is to use `Resolve` to retrieve data before the route is activated.
+
+## 6.3. Async Routing
+In route configuration, use `loadChildren: 'module-path#ModuleClass'` to load a module lazily. Use `CanLoad` to guard the lazy loading. 
+
+The `Router` offers two preloading strategies out of the box: no preloading (the default), preloading all. Set `preloadingStrategy: PreloadAllModules` to preload all. Features guarded by `CanLoad` are blocked from preloading. 
+
+You can customize the preloading strategy by implement `PreloadingStrategy.preload()` method. 
