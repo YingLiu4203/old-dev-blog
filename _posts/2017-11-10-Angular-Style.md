@@ -84,4 +84,5 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 })
 ```
 
-## 3. 
+## 3. Material Design
+Using Angular material design is straightforward. First, follow the getting started guide in https://material.angular.io/guide/getting-started to setup Angular to use a specific theme. Then, check the documents in https://material.angular.io/components/categories to learn how to use each component. 
