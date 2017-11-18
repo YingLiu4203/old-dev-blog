@@ -42,8 +42,6 @@ class MyCmp {
 
 The `data`, `params`, `queryParams`, `fragment`, and `paramMap` properties of `ActivatedRoute` are observables. To access those data immediately, use `snapshot` property to access the instant properties. 
 
-To navigate, either use `Router.navigate()` imperatively or `<a [RouterLink]=...>` declaratively. 
-
 # 3 URLS
 In Angular, a URL is just a serialized router state. Navaigation that changes a state results in a URL change. 
 
@@ -83,3 +81,13 @@ During a navigation, after redirects have been applied, the router creates a `Ro
 `RouterState` and `ActivateRoute` are similar to their snapshot counterparts except that they expose all the values as observables. They can be inject to component constructor. 
 
 The router state includes url, params, data (static and dynamically resolved), query parmater and fragment. 
+
+## 5 Link Navigation
+
+To navigate, either use `Router.navigate()` imperatively or `<a [RouterLink]=...>` declaratively. 
+
+To navigate to `/inbox/33:details=true/messages/44;mode=preview`, use `router.navigate['/inbox', 33, {details: true}, 'message', 44, {mode: 'preview}])`. 
+
+Use `router.navigator([{outlets: {popup: 'message/22'}}])` to update secondary segment. Navigation can be relative. You can preserve query parameter and fragment in navigation. 
+
+Behind the scene, `RouterLink` just calls `router.navigate` with the provided commands. Use `routerLinkActive` to add CSS classes. Use `routerLinkActivateOptions` to set exact matching. 
