@@ -50,24 +50,7 @@ When there are multiple lines (some items are wrapped), the `align-content` cont
 
 There is a live dome hosted in https://tburleson-layouts-demos.firebaseapp.com/#/docs. 
 
-### 2.1 The API
-To control dirction, use `fxLayout` that has values of `row` (the default), `column`, `row-reverse`, and `column-reverse`. An optional `wrap` value can be combined with the direction value to control flow behavior. 
-
-The `fxLayoutAlign` controls the item sizes of both the main-axis and the cross-axis using a pattern `<main-axis> <corss-axis>`. The `corss-axis` doesn't support the `baseline` value. 
-
-Use `fxLayoutGap` to set gap between items. The value could be `%`, `px`, `vw` and `vh`. 
-
-Use `fxFlex` to control the `<grow> <shrink> <basis>` of an item. 
-
-Use `fxFlexOrder` to control order. Use `fxFlexOffset` to control offset. Use `fxFlexAlign` to control alignment. The `fxFlexFill` maximizes width and height of elemtn in a container. 
-
-There are help directives include `fxHide`, `fxShow`, `ngClass` and `ngStyle` to add styles. 
-
-The directives can be combined with breakpoints. The breakpoints alias are: `xs`, `sm`, `md`, `lg`, `xl`, `lt-sm`, `lt-md`, `lt-lg`, `lt-xl`, `gt-xs`, `gt-sm`, `gt-md`, and `gt-lg`.  
-
-Two examples, `<div fxShow fxHide.xs="false" fxHide.lg="true"> ... </div>` and `<div fxFlex="50%" fxFlex.gt-sm="100%"> ... </div>`.  
-
-### 2.2 Use Angular Flex Layout
+### 2.1 Use Angular Flex Layout
 
 You need to install `angular/flex-layout` npm package and import `FlexLayoutModule` in main module file. 
 
@@ -83,6 +66,32 @@ import { FlexLayoutModule } from '@angular/flex-layout';
   ...
 })
 ```
+### 2.2 The API
+
+#### 2.2.1 Container Styles
+To control dirction, use `fxLayout` that has values of `row` (the default), `column`, `row-reverse`, and `column-reverse`. An optional `wrap` value can be combined with the direction value to control flow behavior. 
+
+The `fxLayoutAlign` controls the item sizes of both the main-axis and the cross-axis using a pattern `<main-axis> <corss-axis>`. The `corss-axis` doesn't support the `baseline` value. 
+
+Use `fxLayoutGap` to set gap between items. The value could be `%`, `px`, `vw` and `vh`. 
+
+Use `fxLayoutWrap` to set the wrap behavior of children. 
+
+#### 2.2.2 Element Styles Within Containers
+Use `fxFlex` to control the `<grow> <shrink> <basis>` of an item. 
+
+Use `fxFlexOrder` to control order. 
+
+Use `fxFlexOffset` to control offset. 
+
+Use `fxFlexAlign` to control alignment of this single child. 
+
+The `fxFlexFill` maximizes width and height of elemtn in a container. 
+
+#### 2.2.3 Special Reponsive Features
+There are help directives include `fxHide`, `fxShow`, `ngClass` and `ngStyle` to add styles. Theses directives can be combined with breakpoints. The breakpoints alias are: `xs`, `sm`, `md`, `lg`, `xl`, `lt-sm`, `lt-md`, `lt-lg`, `lt-xl`, `gt-xs`, `gt-sm`, `gt-md`, and `gt-lg`.  
+
+Two examples, `<div fxShow fxHide.xs="false" fxHide.lg="true"> ... </div>` and `<div fxFlex="50%" fxFlex.gt-sm="100%"> ... </div>`.  
 
 ## 3. Material Design
 Using Angular material design is straightforward. First, follow the getting started guide in https://material.angular.io/guide/getting-started to setup Angular to use a specific theme. Then, check the documents in https://material.angular.io/components/categories to learn how to use each component. 

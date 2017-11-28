@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Angular Test Note
+title: RxJS Note
 categories:
 - Notes
 tags:
