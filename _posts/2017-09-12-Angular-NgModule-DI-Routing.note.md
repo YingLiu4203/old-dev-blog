@@ -65,13 +65,12 @@ Register a provider with a component when you must limit the scope of a service 
 
 Don't specify app-wide singleton providers in a shared module because lazy-loaded module makes its own copy of the service. Put singleton service into a so-called `CoreModule` and only import it once in `AppModule`. Add a guard to a module to check if the module was previously loaded. 
 
-Create a `SharedModule` with the components, driectives and pipes that are used widely in your app. Shared module may re-export other widget modules but should not have `providers`. 
+Create a `SharedModule` with the components, driectives and pipes that are used widely in your app. Shared modules may re-export other widget modules but should not have `providers`. There is no need to declare modules in `imports` to export them in `exports`. Group shared modules together and export them in a shared module makes code simpler. 
 
 Create a `CoreModule` with `provides` as a pure service module for the singleton services. It performs the following functions: 
 * declares root level components.
-* imports root router module.
 * exports components used by app module selector (no need to export routed root-level components), root route module. 
-* declares shared singlton services
+* declares shared singlton service providers.
 
 Import it int he root `AppModule` only. 
 
