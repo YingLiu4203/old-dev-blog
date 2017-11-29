@@ -26,18 +26,38 @@ Angular offers a variety of bootstraping options targeting multiple platforms. T
 Entry components are not loaded declaratively via its selector. The root component and components in route defintions are entry components. Angular adds components in `NgModule.bootstrap` list and route definitions to the `entryComponent` list. 
 
 # 3. Feature Modules
-A feature module is imported by other module to provide exported components, directives or pipes . The basic directives such as `NgIf` and `NgFor` are defined in `CommonModule`. 
+A feature module is imported by other module to provide exported components, directives or pipes . The basic directives such as `NgIf` and `NgFor` are defined in `CommonModule` that should be imported into a module. 
 
-Use `loadChildren: 'file_path#ModuleClassName'` for lazy loading of a module. Use `RouterModule.forRoot(routes)` to defin `AppRoutingModule`. A feature module may define its own router module using `RouterModule.forChild()`. 
+A feature module can only use components and modules (including router modules) declared or imported in its module file. Services registered in the root injector can be used by any module that uses the root injector. 
 
-For directives and pipes shared by many modules, create a common module that exports the shared functions. 
+Use `forRoot()` as the following to define routes in root module. 
+
+```typescript
+@NgModule({
+  imports: [RouterModule.forRoot(appRoutes)],
+  exports: [RouterModule],
+})
+```
+
+A feature module may define its own router module using `forChild()` as the following: 
+
+```typescript
+@NgModule({
+  imports: [RouterModule.forChild(childRoutes)],
+  exports: [RouterModule],
+})
+```
+
+Components, directives and pipes can only be declared once. You can use a common module that declars shared functions once and exports them. Then import the common module should enable sharing. 
+
+Add a lazy loading route path in a syntax of `{path: 'lazy-path', loadChildren: 'file_path/filename#ModuleClassName', canLoad: [ChildGuard]}` for lazy loading of a module. The `canLoad` parameter is to guard the navigation for lazy loading modules. For lazy loading module route, use an empty top level path to define all children paths: `{path '', component: LazyComponent, children: [...]}`.
 
 # 4. Tips
 A module is a great way to aggregate classes from other modules and re-export them in a consolidated module. It helps organize the app structure. 
 
-Use `forRoot` to config root level modules, `forChild` for a child module. 
+Use `forRoot` to config root level modules, `forChild` for a child module. Add a `{preloadingStrategy: PreloadAllModules}` to preload lazy loding moudles. 
 
-Lazy-loaded module has its own injector. Therefor its provided services are only visible to that module. 
+If a lazy-loaded module doesn't register a service provider, it uses root inject by default. If a lazy-module defines a service provider,  it has a child injector and its provided services are only visible to that module. Be careful of shared module service providers -- if it's used by a lazy-loaded module, a separte service will be created for the lazy-loaded module. You should never register a service provider in a shared module.
 
 In general, prefer registering feature-specific providers in modules (`@NgModule.providers`) to registering in components (`@Component.providers`). For a non-root componet, providers in modules are shored by all instance of the component while providers in component will create services for each component instance. Always register application-wide services with the root AppModule, not the root AppComponent. 
 
@@ -45,9 +65,14 @@ Register a provider with a component when you must limit the scope of a service 
 
 Don't specify app-wide singleton providers in a shared module because lazy-loaded module makes its own copy of the service. Put singleton service into a so-called `CoreModule` and only import it once in `AppModule`. Add a guard to a module to check if the module was previously loaded. 
 
-Create a `SharedModule` with the components, driectives and pipes that are used widely in your app. Shared module may re-export other widget modules but should not have `providers`. 
+Create a `SharedModule` with the components, driectives and pipes that are used widely in your app. Shared modules may re-export other widget modules but should not have `providers`. There is no need to declare modules in `imports` to export them in `exports`. Group shared modules together and export them in a shared module makes code simpler. 
 
-Create a `CoreModule` with `provides` as a pure service module for the singleton services. Import it int he root `AppModule` only. 
+Create a `CoreModule` with `provides` as a pure service module for the singleton services. It performs the following functions: 
+* declares root level components.
+* exports components used by app module selector (no need to export routed root-level components), root route module. 
+* declares shared singlton service providers.
+
+Import it int he root `AppModule` only. 
 
 # 5. DI
 Angular creates an application-wide injector during the bootstrap process. You need to register the providers that create the servces the application requires. You can either register a provider within an `NgModule` or in application components. A provider in an `NgModule` is registered in the root injector and is accessible in the entire application. A provider in a component is component-scoped, i.e., is accessible only to that component and its children. 
