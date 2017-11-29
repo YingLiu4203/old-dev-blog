@@ -9,7 +9,7 @@ tags:
 
 The notes is based on the book [RxJS in Action](https://www.manning.com/books/rxjs-in-action).
 
-## 1 The Need of a New Async Paradigm
+## 1 A New Async Paradigm
 
 The existing sync loop, conditional statements and exception handling strategies are not async aware. They are oblivious of wait time or latency between operations. Nesting calls are not only hard to understand but also bring clsuores with them. Cancel long-running operation is hard, if not impossible. Throtting is missing. Composing of nested asyn flows is difficult.
 
@@ -32,3 +32,6 @@ There are four types of data sources:
 4. Multi-value, asynchronous: the typical solution is an `EventEmitter`. Use `Rx.Observalbe.fromEvent()` to wrap it. RxJS uses push-based notifications.
 
 An observer is registered to an observable. An observer has three methods: `next()`, `error()`, and `complete()`.
+
+## 2 Operators
+RxJS avoids premature allocation of data in two ways: using of a lazy subscription and, by default, pushing data as soon as the event is emitted without holding it in memory.
