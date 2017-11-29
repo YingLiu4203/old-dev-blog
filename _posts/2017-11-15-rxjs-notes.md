@@ -116,3 +116,12 @@ There are two important characteristics of RxJS timing:
 `bufferTime(period)` buffers for a specific period.
 
 `bufferWhen(selector)` buffers when the selector call emits a value.
+
+## 4 Combining Multiple Observables
+
+The `merge()` method merges one observable with others. The elements are in the order of their original sources.
+
+The `concat()` method appends all element of a source to another one. It begins emitting data from a second observable only when the first one completes.
+
+The `switch()` is an instance method that takes another observable that has been mapped to the source observable. It unsubscribes from the original source observable when the later observable emits.
+
