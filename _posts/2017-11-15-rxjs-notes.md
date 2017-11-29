@@ -33,5 +33,59 @@ There are four types of data sources:
 
 An observer is registered to an observable. An observer has three methods: `next()`, `error()`, and `complete()`.
 
+ At the core, an observable is a function that processes a set of inputs and returns an object that can be subscribed by an observer. The observer receives a subscription to manage the disposal of the stream.
+
 ## 2 Operators
 RxJS avoids premature allocation of data in two ways: using of a lazy subscription and, by default, pushing data as soon as the event is emitted without holding it in memory.
+
+An operator is a pure, higher-order, lazily-evaluated function that is injected into an observable's pipeline.
+
+### 2.1 Core Operators
+The `map` operator transforms data from one type to another.
+
+The `filter` removes unwanted items from a stream via a selector function, also called the predicate.
+
+The `reduce(accumulatorFunction, [initialValue])` operator turns a stream into a single value observable. The `accumulatorFunction` takes two parameters: the current result and the new steam element.
+
+The `scan()` applies an accumulator function over an observable sequence but returns each intermediate results.
+
+The `take(count)` operator returns a specified amount of contiguous elements. The `first` and `last` return the first or the last element, repsectively.
+
+The `min` and `max` operator turens the minimum or maximum value of a finite stream.
+
+The `do` utitlity operator invokes an acton for each element to perform some type of side effect, mostly for debugging or tracing purposes. It can be plugged into any step in the pipeline.
+
+The `pluck(propertyName)` gets the value for a named-property from each element.
+
+If a pipeline is side effect-free, it is said to be **self-contained**. It's called operator chaining or fluent programming.
+
+An observable must always produce the same results given the same events passing throught it. It's a qulaity known in FP as **referential transparency**.
+
+### 2.2 An Operator Example
+An operator creates a brand-new observable, transforming the data from its source and delegating result to the next subscriber in the chain.
+
+```javascript
+function exclude(predicate) {
+    return Rx.Observable.create(subscriber => {
+        let source = this
+        return source.subscribe(
+            value => {
+                try {
+                    if (!predicate(value)) {
+                        subscriber.next(value)
+                    }
+                }
+                catch(err) {
+                    subscriber.error(err)
+                }
+            },
+            err => subscriber.error(err),
+            () => subscriber.complete()
+        })
+    })
+}
+
+Rx.Observable.prototype.exclude = exclude
+```
+
+Oberserables are lightweight and inexpensive to create. They have built-in capabilitys for disposal and cancellation via the `unsubscribe()` method. Use `Rx.Observable.create` to return a function that is called when the `unsubscribe()` method of the observable is called.
