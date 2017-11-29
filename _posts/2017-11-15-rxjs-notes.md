@@ -13,7 +13,7 @@ The notes is based on the book [RxJS in Action](https://www.manning.com/books/rx
 
 The existing sync loop, conditional statements and exception handling strategies are not async aware. They are oblivious of wait time or latency between operations. Nesting calls are not only hard to understand but also bring clsuores with them. Cancel long-running operation is hard, if not impossible. Throtting is missing. Composing of nested asyn flows is difficult.
 
-RxJS is an API for asyn programming with observable streams. A stream is a sequence of event over time. Everything is a stream in RxJS. RxJS uses an observer design pattern that involves an object (the subject), which maitains a list of subscribers (each is an observer). RxJS adds features such as completion signal, lazy initialization, cancellation, resource management and dsiposal. 
+RxJS is an API for asyn programming with observable streams. A stream is a sequence of event over time. Everything is a stream in RxJS. RxJS uses an observer design pattern that involves an object (the subject), which maitains a list of subscribers (each is an observer). RxJS adds features such as completion signal, lazy initialization, cancellation, resource management and dsiposal.
 
 RxJS abstract over time under the same programming model regardless of source. It has the following components:
 
@@ -89,3 +89,30 @@ Rx.Observable.prototype.exclude = exclude
 ```
 
 Oberserables are lightweight and inexpensive to create. They have built-in capabilitys for disposal and cancellation via the `unsubscribe()` method. Use `Rx.Observable.create` to return a function that is called when the `unsubscribe()` method of the observable is called.
+
+## 3 Time Management
+Functions that deal with time are inherently impure because time is global to the entire applicatonand forever changing. JavaScript functions like `Data.now()` and `Math.random()` are impure because their returns are inconsistent. An async event brings two challenges:
+* It may or may not happen in the future.
+* It's conditional that it depends on the result of a previous task.
+
+Callbacks and event handlers have implicit timing in the process.
+
+### 3.1 Timing Methods
+The `Rx.Observable.timer(offset)` creates an observable that will emit a single event after a given period of time. Similarly, `interval(span)` emits a sequnece of natural numbers starting from 0 at the fixed interval. They also accept an additional `scheduler` parameter that makes testing easy. The `timeInterval()` instance method gives both a count as well as the time intervals between two events. The `delay(offset)` time shifts the entire observable sequence.
+
+There are two important characteristics of RxJS timing:
+* Each operator only affects the propagatin of an event, not its creation.
+* Time operators act sequentially.
+
+`debounceTime(period)` triggers only if a certian period has passed without it being call. The last value will be emitted.
+
+`throttleTiem(period)` emits at most once every period.
+
+### 3.2 Buffering
+`buffer(closingObservable)` buffers data until a closing observable emits an event.
+
+`bufferCount(number)` buffers the number of events.
+
+`bufferTime(period)` buffers for a specific period.
+
+`bufferWhen(selector)` buffers when the selector call emits a value.
