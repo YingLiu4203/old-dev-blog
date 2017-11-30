@@ -119,9 +119,16 @@ There are two important characteristics of RxJS timing:
 
 ## 4 Combining Multiple Observables
 
+### 4.1 Flat Combination
 The `merge()` method merges one observable with others. The elements are in the order of their original sources.
 
 The `concat()` method appends all element of a source to another one. It begins emitting data from a second observable only when the first one completes.
 
-The `switch()` is an instance method that takes another observable that has been mapped to the source observable. It unsubscribes from the original source observable when the later observable emits.
+The `switch()` is an instance method that subscribes to an observable that emits obserables. Eech time it sees a new emitted observable, it unsubscribes from the previously-emitted observable. As described in its document http://reactivex.io/documentation/operators/switch.html 
 
+> convert an Observable that emits Observables into a single
+> Observable that emits the items emitted by the 
+> most-recently-emitted of those Observables.
+
+### 4.2 Nested Observables
+Observables manage and control the data that flows through them via data containerizing. Therefore, there are cases of observables whose values are observables. This software pattern is the FP paradigm called **monad**. A monad exposes an interface with three methods: a unit function to left values into the monadic context (`of()`), a mapping function (`map()`), and a map-with-flatten function (`mergeMap()`). 
