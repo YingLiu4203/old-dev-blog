@@ -25,7 +25,7 @@ The Angular router takes a URL, then:
 
 A router uses parentheses to serialize secondary segments. For example, `/inbox/33(popup:compose)`. The colon syntax specifies the outlet. A router us `param=value` shyntax to specify route-specific parameters. For example, `/inbox/33;open=true/messages/44`. 
 
-A router state consists of activated routes. An each activated route can be associated with a component. When a route state is recognized, we have a future router state. The router will check that transitioning to the future state is permitted by running guards. 
+A router state consists of activated routes. An activated route can be associated with a component. When a route state is recognized, we have a future router state. The router will check that transitioning to the future state is permitted by running guards. 
 
 When configure routers, an option is to define a `resolve` property that is called to retrieve data for that router. You can acces the resolved data by injecting the activated route object into a component. Following is an example: 
 

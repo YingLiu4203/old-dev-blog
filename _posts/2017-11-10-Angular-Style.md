@@ -92,6 +92,13 @@ The `fxFlexFill` maximizes width and height of elemtn in a container.
 There are help directives include `fxHide`, `fxShow`, `ngClass` and `ngStyle` to add styles. Theses directives can be combined with breakpoints. The breakpoints alias are: `xs`, `sm`, `md`, `lg`, `xl`, `lt-sm`, `lt-md`, `lt-lg`, `lt-xl`, `gt-xs`, `gt-sm`, `gt-md`, and `gt-lg`.  
 
 Two examples, `<div fxShow fxHide.xs="false" fxHide.lg="true"> ... </div>` and `<div fxFlex="50%" fxFlex.gt-sm="100%"> ... </div>`.  
-
 ## 3. Material Design
-Using Angular material design is straightforward. First, follow the getting started guide in https://material.angular.io/guide/getting-started to setup Angular to use a specific theme. Then, check the documents in https://material.angular.io/components/categories to learn how to use each component. 
+Using Angular material design is straightforward. First, follow the getting started guide in https://material.angular.io/guide/getting-started to setup Angular to use a specific theme. 
+
+Then, check the documents in https://material.angular.io/components/categories to learn how to use each component. 
+
+You can customize a theme as described in https://material.angular.io/guide/theming. 
+
+If your app's content is not placed inside of a `mat-sidenav-container` element, you need to add the `mat-app-background` class to your wrapper element (for example the body). This ensures that the proper theme background is applied to your page.
+
+Use Google materical icons and fonts by including `<link href="https://fonts.googleapis.com/icon?family=Material+Icons|Roboto:300,400,500" rel="stylesheet">` in `index.html`. Then add the body style as `body { font-family: 'Roboto', sans-serif; }` in `style.css` file. 
