@@ -1,11 +1,12 @@
 ---
 layout: post
-title: RxJS Note
+title: RxJS Notes
 categories:
 - Notes
 tags:
 - javascript, rxjs
 ---
+# RxJS Notes
 
 The notes is based on the book [RxJS in Action](https://www.manning.com/books/rxjs-in-action).
 
@@ -27,20 +28,22 @@ In RxJS, data is not stored in variables. It flows through the streams. RxJS fol
 There are four types of data sources:
 
 1. Single-value, synchronous: use simple sync operation to process the data. An observalbe wrapper is only used when they combine with other streams. Use `Rx.Observable.of(value)` to wrap it.
-2. Multi-value, synchronous: is better processed by pull-based iterator. Use `Rx.Observable.from(values)` to wrap it. The `forEach` method is overloaded that has the same semantics as `subscribe`.
-3. Single-value, asynchronous: it's often wrapped in a promise. A promise is execuated eagerly and asynchrounously. Use `Rx.Observalbe.fromPromise(promise)` to wrap it.
-4. Multi-value, asynchronous: the typical solution is an `EventEmitter`. Use `Rx.Observalbe.fromEvent()` to wrap it. RxJS uses push-based notifications.
+1. Multi-value, synchronous: is better processed by pull-based iterator. Use `Rx.Observable.from(values)` to wrap it. The `forEach` method is overloaded that has the same semantics as `subscribe`.
+1. Single-value, asynchronous: it's often wrapped in a promise. A promise is execuated eagerly and asynchrounously. Use `Rx.Observalbe.fromPromise(promise)` to wrap it.
+1. Multi-value, asynchronous: the typical solution is an `EventEmitter`. Use `Rx.Observalbe.fromEvent()` to wrap it. RxJS uses push-based notifications.
 
 An observer is registered to an observable. An observer has three methods: `next()`, `error()`, and `complete()`.
 
  At the core, an observable is a function that processes a set of inputs and returns an object that can be subscribed by an observer. The observer receives a subscription to manage the disposal of the stream.
 
 ## 2 Operators
+
 RxJS avoids premature allocation of data in two ways: using of a lazy subscription and, by default, pushing data as soon as the event is emitted without holding it in memory.
 
 An operator is a pure, higher-order, lazily-evaluated function that is injected into an observable's pipeline.
 
 ### 2.1 Core Operators
+
 The `map` operator transforms data from one type to another.
 
 The `filter` removes unwanted items from a stream via a selector function, also called the predicate.
@@ -62,6 +65,7 @@ If a pipeline is side effect-free, it is said to be **self-contained**. It's cal
 An observable must always produce the same results given the same events passing throught it. It's a qulaity known in FP as **referential transparency**.
 
 ### 2.2 An Operator Example
+
 An operator creates a brand-new observable, transforming the data from its source and delegating result to the next subscriber in the chain.
 
 ```javascript
@@ -91,16 +95,20 @@ Rx.Observable.prototype.exclude = exclude
 Oberserables are lightweight and inexpensive to create. They have built-in capabilitys for disposal and cancellation via the `unsubscribe()` method. Use `Rx.Observable.create` to return a function that is called when the `unsubscribe()` method of the observable is called.
 
 ## 3 Time Management
+
 Functions that deal with time are inherently impure because time is global to the entire applicatonand forever changing. JavaScript functions like `Data.now()` and `Math.random()` are impure because their returns are inconsistent. An async event brings two challenges:
+
 * It may or may not happen in the future.
 * It's conditional that it depends on the result of a previous task.
 
 Callbacks and event handlers have implicit timing in the process.
 
 ### 3.1 Timing Methods
+
 The `Rx.Observable.timer(offset)` creates an observable that will emit a single event after a given period of time. Similarly, `interval(span)` emits a sequnece of natural numbers starting from 0 at the fixed interval. They also accept an additional `scheduler` parameter that makes testing easy. The `timeInterval()` instance method gives both a count as well as the time intervals between two events. The `delay(offset)` time shifts the entire observable sequence.
 
 There are two important characteristics of RxJS timing:
+
 * Each operator only affects the propagatin of an event, not its creation.
 * Time operators act sequentially.
 
@@ -109,6 +117,7 @@ There are two important characteristics of RxJS timing:
 `throttleTiem(period)` emits at most once every period.
 
 ### 3.2 Buffering
+
 `buffer(closingObservable)` buffers data until a closing observable emits an event.
 
 `bufferCount(number)` buffers the number of events.
@@ -120,15 +129,17 @@ There are two important characteristics of RxJS timing:
 ## 4 Combining Multiple Observables
 
 ### 4.1 Flat Combination
+
 The `merge()` method merges one observable with others. The elements are in the order of their original sources.
 
 The `concat()` method appends all element of a source to another one. It begins emitting data from a second observable only when the first one completes.
 
-The `switch()` is an instance method that subscribes to an observable that emits obserables. Eech time it sees a new emitted observable, it unsubscribes from the previously-emitted observable. As described in its document http://reactivex.io/documentation/operators/switch.html 
+The `switch()` is an instance method that subscribes to an observable that emits obserables. Eech time it sees a new emitted observable, it unsubscribes from the previously-emitted observable. As described in its [operator document](http://reactivex.io/documentation/operators/switch.html).
 
-> convert an Observable that emits Observables into a single
-> Observable that emits the items emitted by the 
+> convert an Observable that emits Observables into a single.
+> Observable that emits the items emitted by the.
 > most-recently-emitted of those Observables.
 
 ### 4.2 Nested Observables
-Observables manage and control the data that flows through them via data containerizing. Therefore, there are cases of observables whose values are observables. This software pattern is the FP paradigm called **monad**. A monad exposes an interface with three methods: a unit function to left values into the monadic context (`of()`), a mapping function (`map()`), and a map-with-flatten function (`mergeMap()`). 
+
+Observables manage and control the data that flows through them via data containerizing. Therefore, there are cases of observables whose values are observables. This software pattern is the FP paradigm called **monad**. A monad exposes an interface with three methods: a unit function to left values into the monadic context (`of()`), a mapping function (`map()`), and a map-with-flatten function (`mergeMap()`).
