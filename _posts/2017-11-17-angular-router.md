@@ -100,23 +100,63 @@ A special case of constant segment is the empty string path defined as `path: ''
 
 The router has a matching strategy. By default, the `pathMatch` value is `prefix` that matches the path prefix. For `redirectTo` route, you should define `pathMatch: 'full'` for empty path.
 
-A path that dosen't have `redirectTo` or `component` property is a a componentless route that consume a URL segment. When two or more siblings share some data, use a componentless route to share data.
+A path that dosen't have `redirectTo` or `component` property is a a componentless route that consume a URL segment. The parameters captured by a componentless route will be merge with its children. When two or more siblings share some data, use a componentless route to share data.
+
+### 3.3 Redirect
+
+Redirects can be local and absolute (the `redirectTo` value starts with a `/`). Local redirects replace a single URL segment with a different one. Absolute redirects replace the whole URL.
+
+The router applies one redirect for one level. Mutiple redirects must be in different levels.
 
 ## 4 Router State
 
-During a navigation, after redirects have been applied, the router creates a `RouterStateSnapshot` object that is a tree of `ActivatedRouteSnapShot`.
+### 4.1 Route Data Structure
 
-`RouterState` and `ActivateRoute` are similar to their snapshot counterparts except that they expose all the values as observables. They can be inject to component constructor.
+As mentioned before, a route state is organized as a tree where each node is a route. Both the state and route have an observable interface and a normal interface.
 
-The router state includes url, params, data (static and dynamically resolved), query parmater and fragment.
+The router uese an `routeState: RouteState` property to represent the route state. The `RouteState` is a tree of activated routes that have a type of `ActivatedRoute`.
+
+The `RouteState` also has a `snapshot: RouteStateSnapShot` property. During a navigation, after redirects have been applied, the router creates the `RouterStateSnapshot` object that is a tree of `ActivatedRouteSnapshot`.
+
+The `ActivatedRoute` interface has the following members:
+
+* `url: Observable<UrlSegment[]>`: the URL segment matched by a route.
+* `params: Observable<Params>`: the positional parameter and matrix parameters scoped to this route.
+* `queryParams: Observable<Params>`: the query parameters shared by all the routes.
+* `fragment: Observable<string>`: the URL fragment shared by all the routes.
+* `data: Observable<Data>`: the static and resolved data of this route.
+* `outlet: string`: the outlet name of the route.
+* `component: Type<any>|string|null`: the component of this route.
+* `snapshot: ActivatedRouteSnapshot`: the current snapshot of this route.
+* `root: ActivatedRoute`: the root of the route state.
+* `parent: ActivatedRoute`: the parent of this route.
+* `firstchild: ActivatedRoute`: the first child of this route.
+* `children: ActivatedRoute[]`: the children of this route.
+
+The `ActivatedRouteSnapshot` interface has the similar properties as the `ActivatedRoute` excpet that its properties are immediate values that are not obverable.
+
+### 4.2 Access Route State
+
+There are two methods to access the route state from a component. Both use injected objects.
+
+First, each component can be inject with an `Router` object that has a `routeState: RouteState` property. The `root` property is the root `ActivatedRoute` object that allows you to access the whole tree.
+
+Second, each component can be injected with an `ActivatedRoute` object that is a route tree node associated with the component.
+
+For both cases, use the `snapshot` property to access the corresponding snapshot version object.
+
+In data resolve method, you have access to both `ActivatedRouteSnapshot` and `RouteStateSnapshot`.
 
 ## 5 Link Navigation
 
-To navigate, either use `Router.navigate()` imperatively or `<a [RouterLink]=...>` declaratively.
+To navigate imperatively, use `Router.navigate()` or `Router.navigatebyUrl()`. Using `router.navigateByUrl` is the same as changing the location in address bar. It will create a whole new route state with the new URL. `Router.navigate()` apply passed-in commands, a path to the current URL.
+
+For declarative, use `<a [RouterLink]=...>`.
 
 To navigate to `/inbox/33:details=true/messages/44;mode=preview`, use `router.navigate['/inbox', 33, {details: true}, 'message', 44, {mode: 'preview}])`.
+The string URL is a syntactic sugar for the array URL.
 
-Use `router.navigator([{outlets: {popup: 'message/22'}}])` to update secondary segment. Navigation can be relative. You can preserve query parameter and fragment in navigation.
+Use `router.navigate([{outlets: {popup: 'message/22'}}])` to update secondary segment. Navigation can be relative. You can preserve query parameter and fragment in navigation.
 
 Behind the scene, `RouterLink` just calls `router.navigate` with the provided commands. Use `routerLinkActive` to add CSS classes. Use `routerLinkActivateOptions` to set exact matching.
 
