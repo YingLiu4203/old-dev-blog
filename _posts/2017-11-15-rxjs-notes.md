@@ -142,4 +142,22 @@ The `switch()` is an instance method that subscribes to an observable that emits
 
 ### 4.2 Nested Observables
 
-Observables manage and control the data that flows through them via data containerizing. Therefore, there are cases of observables whose values are observables. This software pattern is the FP paradigm called **monad**. A monad exposes an interface with three methods: a unit function to left values into the monadic context (`of()`), a mapping function (`map()`), and a map-with-flatten function (`mergeMap()`).
+Observables manage and control the data that flows through them via data containerizing. Therefore, there are cases of observables whose values are observables. This software pattern is the FP paradigm called **monad**. A monad exposes an interface with three methods: a unit function to lift values into the monadic context (`of()`), a mapping function (`map()`), and a map-with-flatten function (`mergeMap()`).
+
+The semantic meaning of `mergeMap()` is to transform the mapped stream by flatting a stream of projected observable, i.e., extracting data from the nested observables.
+
+The `catcatMap()` waits for the previous one to complete then concats the flatted observable.
+
+The `switchMap()` switches to the projected observale when it emits the most recent value. It cacles any previous inner observables.
+
+The `contactAll()` waits each observable sequentially and flat the result.
+
+### 4.3 Coordinating Observalbes
+
+The `startWith()` emits a value before other observalbe values emitting.
+
+The `using(resourceFactory, observableFactory)` calls `resource.unsubscribe()` when the observable is completed.
+
+The `combineLatest()` emits an array of the latest values of multiple independent observalbes.
+
+The `forkJoin()` emits only the last value of each forked stream.
