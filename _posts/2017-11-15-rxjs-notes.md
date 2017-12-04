@@ -161,3 +161,14 @@ The `using(resourceFactory, observableFactory)` calls `resource.unsubscribe()` w
 The `combineLatest()` emits an array of the latest values of multiple independent observalbes.
 
 The `forkJoin()` emits only the last value of each forked stream.
+
+## 5 Error Handling
+
+RxJS implements a functional error-handling technique. It abstracts errors and exception handling via several strategies.
+
+### 5.1 Error Propagation
+
+At the end of the observable stream is a subscriber waiting to pounce on the next event to occur. The subscriber implements the `Observer` interface that consisting of three methodsd: `next()`, `error()`, and `complete()`. Errors occur at the begining of the stream or in the middle are propagated down to any observer, finally resulting in a call to `error()`. The first exception that fires will result in the entire stream being cancelled.
+
+### 5.2 Catching and Reacting to Errors
+
