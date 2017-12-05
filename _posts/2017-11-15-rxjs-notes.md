@@ -162,6 +162,8 @@ The `combineLatest()` emits an array of the latest values of multiple independen
 
 The `forkJoin()` emits only the last value of each forked stream.
 
+Use `zip()` to combine streams that happen synchronously.
+
 ## 5 Error Handling
 
 RxJS implements a functional error-handling technique. It abstracts errors and exception handling via several strategies.
@@ -172,3 +174,30 @@ At the end of the observable stream is a subscriber waiting to pounce on the nex
 
 ### 5.2 Catching and Reacting to Errors
 
+The `catch()` operator intercepts any error in the `Observable` and give you the option to handle by returning a new `Obseervable` or propogating it downstream.
+
+The `catch()` operato is passed a function that takes an error argument as well as the soruce observable that was caught. Therefore you can return the source observable to retry from the begining.
+
+RxJS provides `retry()` operator to reexecuting the source obserbale a number of retries. Be carful when use it with an observalbe creaetd from a promise because a promise alway return a settled value (success or failure). You can control retry strategy using `retryWhen()`.
+
+RxJS provides `throw()` and `finally()` operators to throw exception or run cleanup code. The `finally()` runs when a stream compleetes or when it errors.
+
+## 6 Hot and Cold
+
+The hot and cold category determines the stream behavior, not just the subscription semantics, but also the entire lifetime of the strea.
+
+### 6.1 Cold Observables
+
+A **cold observable** doesn't begin emittting until an observer subscribes to it. It is typically used to wrap bounded data resource types such as numbers, ranges of numbers, strings, arrays and HTTP requests, as well as unbounded types like generator functions. These resources are known as **passive** in the sense that their declaration is **independent** of their execution. They are truly lazy in their creation and execution.
+
+Being cold means that each new subscription is creating a new independent stream with a new starting point for that stream. Each subscriber will always independently receive the exact same set of events. A cold observable can be thought of as a function of an object factory that takes input data and return an output to the caller.
+
+The declaration of a cold observable frequently begins with the static operators such as `of()`, `from()`, `interval()`, and `timer()`.
+
+### 6.2 Hot Observables
+
+Hot observables produce events regardless of the presence of subscribers. Hot observables are used to model events like clicks, mouse movement, touch, or any other vents exposed via event emitters.
+
+Simialarly, an HTTP request is colde where a Promise is hot -- a promise is not reexecutable once it's been fulfilled.
+
+A hot observable shares the same subscription to all observers that listen to it. It emits ongoing sequence of events from the point of subscription and not from the beginning.
