@@ -201,3 +201,13 @@ Hot observables produce events regardless of the presence of subscribers. Hot ob
 Simialarly, an HTTP request is colde where a Promise is hot -- a promise is not reexecutable once it's been fulfilled.
 
 A hot observable shares the same subscription to all observers that listen to it. It emits ongoing sequence of events from the point of subscription and not from the beginning.
+
+### 6.3 Change Temperature
+
+The default resubscription behavior of RxJS is code observable subscription: each subscriber gets its own copy of the producer. It is the case for synchronous data sources as well as async data sources wrapped created within an observable context. An implication is that anything subscribing to a cold observable creates an one-to-one unicast comunication between the proudcer and the consumer. Subscribing to a hot observable creates an one-to-many shared/multicast communication between the producer and its consumers.
+
+By moving a hot source producer such as a promise or a websocket creation into an observer context, you make a hot source cold.
+
+By moving a cold source producer out of an observable context and let the observable to subscribe the producer event can make a cold source hot.
+
+The `share()` operator turns a cold stream to hot by managing the underlying stream's state thus the stream can be shahred by all subscribers.
