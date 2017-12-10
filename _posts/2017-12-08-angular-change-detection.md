@@ -98,6 +98,6 @@ The most common reason for this error is that after the parent component change 
 
 Another error case is that a component change its dom tree in those hooks.
 
-To fix the error, you should design the application to avoid initializing changes from a child. All changes should follow the uni-direction from top to bottom. For example, move the change trigger code to a component that is an ancestor of the affected component. 
+To fix the error, you should design the application to avoid initializing changes from a child. All changes should follow the uni-direction from top to bottom. For example, move the change trigger code to a component that is an ancestor of the affected component.
 
 If the uni-direction flow is impossible, there are three solutions. You can move the change to a pre-change-checking hooks such as `OnChange`, `DoCheck`, or `OnInit`. Another option is using asynchronous update via `setTimeOut`, a promise or an asynchronous event emitter. The third solution is forcing another change detection using `ChangeDetectorRef.detectChanges()`.
