@@ -22,14 +22,14 @@ An NgModule is a class with an `@NgModule` decorator. The decorator function tak
 * `declarations` - the view classes of components, directives or pipes.
 * `exports` - the subset of declarations that should be visible and usable in templates of other modules.
 * `imports` - other modules whose exposed classes used by component templates declared in this module.
-* `providers` - creators of services that this module contributes to the global collection of services. They are accessible in all parts of the app. 
+* `providers` - creators of services that this module contributes to the global collection of services. They are accessible in all parts of the app.
 * `bootstrap` - only the root module set this property to set the app entrance.
 
 [This Angular Modules Blog](https://blog.angularindepth.com/avoiding-common-confusions-with-modules-in-angular-ada070e6891f) provides an in-depth explanation of how modules work.
 
 ## 1.2. Bootstrapping
 
-Bootstrapping is usually done in the `src/main.ts` file like the following: 
+Bootstrapping is usually done in the `src/main.ts` file like the following:
 
 ```ts
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -50,7 +50,7 @@ A `component` manages a patch of screen called a `view`. A view is defined in a 
 * `templateUrl` or `template` - the template file url or literal template.
 * `providers` - an array of dependency injection providers for services that the compnent uses.
 
-Logic is defined in a component class using input, event and services. 
+Logic is defined in a component class using input, event and services.
 
 ## 1.5. Data Binding
 
@@ -65,16 +65,17 @@ Angular supports data binding to coordinate parts of a template with parts of a 
 
 A directive is a class with a `@Directive` decorator. There are two kinds of directives: `structural` and `attribute` directives. The `@Component` decorator is actually a `@Directive` decorator extended with template-oriented features. Because it's so distinctive that we treat it separately from the structural and attribute directives.
 
-Structural directives alter layout by adding, removing, and replacing elements in DOM. Attribute directives alter the appearance or behavior of an existing element. Directives appear within an element tag as attributes, sometimes by name but more often as the target of an assignment or a binding. 
+Structural directives alter layout by adding, removing, and replacing elements in DOM. Attribute directives alter the appearance or behavior of an existing element. Directives appear within an element tag as attributes, sometimes by name but more often as the target of an assignment or a binding.
 
 ## 1.7. Dependency Injection
-DI use injectors to supply a new instance of a class with the fully-formed dependencies it requires. Most dependencies are services. An injector maintains a container of service instances that it creates. Angular uses the types of a constructor parameters for injection. Usually add providers to the root module so that same instance of a service is available everywhere. Alternatively, register a service in the `providers` property of the `@Component` metadata. 
+
+DI use injectors to supply a new instance of a class with the fully-formed dependencies it requires. Most dependencies are services. An injector maintains a container of service instances that it creates. Angular uses the types of a constructor parameters for injection. Usually add providers to the root module so that same instance of a service is available everywhere. Alternatively, register a service in the `providers` property of the `@Component` metadata.
 
 # 2. Template Syntax
 
 ## 2.1. Template Expression
 
-Angular uses interpolation `{{...}}` to insert calculated strings. The text between the braces is a `template expression`. Angular executes the expressions and assigns the result to a property of a binding target. The target might be an HTML element, a component, or a directive. Most JS expressions are legal template expressions, but not all. Expressions such as assignment, `new`, chaining expressions of `;` and `,`, `++`, `--`, bitwise operators `|` and `&`. 
+Angular uses interpolation `{{...}}` to insert calculated strings. The text between the braces is a `template expression`. Angular executes the expressions and assigns the result to a property of a binding target. The target might be an HTML element, a component, or a directive. Most JS expressions are legal template expressions, but not all. Expressions such as assignment, `new`, chaining expressions of `;` and `,`, `++`, `--`, bitwise operators `|` and `&`.
 
 There are three template expression operators: pipe operation `|`, safe navigation operator `?.` and non-null assertion operator `!`. 
 
