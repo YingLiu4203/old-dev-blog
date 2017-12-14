@@ -25,8 +25,6 @@ An NgModule is a class with an `@NgModule` decorator. The decorator function tak
 * `providers` - creators of services that this module contributes to the global collection of services. They are accessible in all parts of the app.
 * `bootstrap` - only the root module set this property to set the app entrance.
 
-[This Angular Modules Blog](https://blog.angularindepth.com/avoiding-common-confusions-with-modules-in-angular-ada070e6891f) provides an in-depth explanation of how modules work.
-
 ## 1.2. Bootstrapping
 
 Bootstrapping is usually done in the `src/main.ts` file like the following:
