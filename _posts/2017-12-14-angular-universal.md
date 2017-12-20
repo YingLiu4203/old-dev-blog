@@ -20,7 +20,7 @@ There are two types of rendering: static prerendering is done at build-time wher
 
 The following resources are enough to use Angular Universal in a projec.
 
-The [official Angular Uinversal Integration document](https://github.com/angular/angular-cli/wiki/stories-universal-rendering) describes detail steps to setup Uinversal bundling for an existing `@angular/cli` project.
+The [official Angular Uinversal Integration document](https://github.com/angular/angular-cli/wiki/stories-universal-rendering) describes detail steps to setup Uinversal bundling for an existing `@angular/cli` project. In addition to following the document, you need to add `document.addEventListener('DOMContentLoaded', () => {...})'` to wrap the boostrap in `main.ts`. Also, don't set `"serviceWorker": true` in `.angular-cli.json` for the server app section.
 
 The [Uinversal Starter](https://github.com/angular/universal-starter) is a minimal Angular Universal starter that has files you can copy to your project directly.
 
@@ -37,3 +37,27 @@ Only run `setTimeout`, `setInterval` in broswer.
 Use `ServerTransferStateModule` to reuse HTTP calls. The blog [Using TransferState API in an Angular v5 Universal App](https://blog.angularindepth.com/using-transferstate-api-in-an-angular-5-universal-app-130f3ada9e5b) has an example.
 
 Use `Render2` to manipulate native element.
+
+Check platform to run client-side only code. For example:
+
+```typescript
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+
+@Component({
+  selector: "app-root",
+  templateUrl: "./app.component.html"
+})
+export class AppComponent implements OnInit {
+
+   constructor(@Inject(PLATFORM_ID) private platformId: Object) {  }
+
+   ngOnInit() {
+     // Client only code.
+     if (isPlatformBrowser(this.platformId)) {
+        let item = {key1: 'value1', key2: 'valu2' };
+        localStorage.setItem( itemIndex, JSON.stringify(item) );
+     }
+   }
+ }
+ ```
