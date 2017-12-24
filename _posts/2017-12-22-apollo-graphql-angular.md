@@ -34,7 +34,7 @@ constructor(
 }
 ```
 
-Use `graphql-tag` to create operations. Here is an example: 
+Use `graphql-tag` to create operations. Here is an example:
 
 ```typescript
 const fragments = gql`
@@ -69,4 +69,22 @@ The Apollo's `watchQuery` method returns a `QueryRef` object that has a `valueCh
 
 For one-time data fetching, use `query` method that returns a normal observable with both `loading` and `data` properties.
 
-Use `mutate({configObject})` to configuire and call mutations. The return is the same result as the `query` result.
+Use `mutate({configObject})` to configuire and call mutations. The return is the same result as the `query` result. You can use `optimisticResponse` option and `updateQueries` to make an optimistic UI.
+
+Apollo client supports batch requests.
+
+### 1.3 Apollo Link
+
+The `apollo-angular-link-http` uses Angular's `HttpClient` and can pass its options during creation.
+
+`HttpLink` supports chainable middlewares. The `link` option of the Apollo client can take an array of middlewars in addition to the `HttpLink`. It is also easy to use `afterware` that processes response.
+
+By default, `queryDeduplication` is turned on to reduce duplications.
+
+### 1.4 Cache
+
+The `InMemoryCache` from the `apollo-cache-inmemory` package is the default cache implementation for Apollo client. It doesn't use Redux.
+
+The `InMemoryCache` normalizes data before saving it to the store. By default, the `id` and `_id` combined with `__typename` are used as the unique id. The `dataIdFromObject` option can take a function to create an id for an object.
+
+The `DataProxy` interface defines
