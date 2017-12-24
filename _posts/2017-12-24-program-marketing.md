@@ -56,4 +56,4 @@ At the end of 2017, some trends are clear for a state of the art company web sit
 * Advertisement integartion: the site should integrate with major digital marketplaces such as Google Adwords, Facebook Ads, LinkedIn Ads and etc. The integration should cover the end-to-end story of a digital marketing compaing: from ads creating, launching, result analyzing and refining.
 * Dashboard with business measurements: in addition to the technical measures such as daily active users, page views, the site should give high level business measures such as conversion rate, ROI of marketing campaigns.
 
-Let's Do IT.
+A website it the top of the iceberg of the lifecycle customer engagment. Let's Do IT as a new year's project.
