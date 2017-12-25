@@ -8,9 +8,9 @@ tags:
 ---
 # Apollo Grpahql Angular Client
 
-This is a note for understanding Apllo client for Angular based on it [official documents](https://www.apollographql.com/docs/angular/).
+This is a note for understanding Apllo client for Angular based on it [official documents](https://www.apollographql.com/docs/angular/) and [the future of state management blog](https://dev-blog.apollodata.com/the-future-of-state-management-dd410864cae2).
 
-The Apollo Angular client works with Angular router and SSR.
+GraphQL is a universal language for data that can work with different data sources including gRPC, REST, and client-side cache. The Apollo Angular client tries to be one source of truth. It uses `HttpLink` to access data from a GraphQL Server. It use `apollo-link-state` to access data in local cache. `apollo-link-rest` is for REST API. You can even request data from multiple sources in one query.
 
 ## 1 Basics
 
