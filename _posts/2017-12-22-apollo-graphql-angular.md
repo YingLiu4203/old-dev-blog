@@ -87,4 +87,4 @@ The `InMemoryCache` from the `apollo-cache-inmemory` package is the default cach
 
 The `InMemoryCache` normalizes data before saving it to the store. By default, the `id` and `_id` combined with `__typename` are used as the unique id. The `dataIdFromObject` option can take a function to create an id for an object.
 
-The `DataProxy` interface defines
+The `DataProxy` interface defines an interface allowing you to access cache directly. Use `readQuery` and `readFragment` to query data or a data fragment. An error will be thrown (for query) or a null (for fragment) if the data is not in the local cache. `writeQuery` and `writeFragment` write data to the local cache.
