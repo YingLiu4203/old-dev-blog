@@ -65,7 +65,7 @@ There are eight kinds of types in GraphQL. Because GraphQL doesn't depend on any
 
 The basic type constructors are scalar types and the enum type.
 
-GraphQL has five scalar types: INT, Float, String, Boolean, and ID. An ID, usually a number / a base64 value / a UUID string etc.,  represents a unique identifier that can be serialized as string.
+GraphQL has five scalar types: `Int`, `Float`, `String`, `Boolean`, and `ID`. An ID, usually a number / a base64 value / a UUID string etc.,  represents a unique identifier that can be serialized as string. You can define a custom calar type such as `scalar Date`.
 
 An enum type is a finite set of names usually in a form of an all-cap string. For example, `enum Episode { NEWHOPE EMPIRE JEDI }`.
 
