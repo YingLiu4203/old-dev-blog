@@ -12,7 +12,7 @@ Sequelize is a promise-based ORM for Node.js. It supports dialects PostgreSQL, M
 
 ## 1 Basic Usage
 
-You first create an instance of Sequelize by `new Sequelize(otpionsObject)`. The options include: 
+You first create an instance of Sequelize by `new Sequelize(otpionsObject)`. The options include:
 
 * `database`, `username`, `password`: the database (can be a connection string) and user info.
 * `dialect`: one of `mysql`, `sqlite`, `postgres`, `mssql`.
@@ -26,3 +26,5 @@ You first create an instance of Sequelize by `new Sequelize(otpionsObject)`. The
 * `sync`: force syn for models. default: `{force: true}`.
 * `pool`: pool configurations include `max`, `idle`, and `acquire`.
 * `isolationLevel`: specify transaction isolation level.
+
+Use `sequlize.query` to run raw SQL queries.

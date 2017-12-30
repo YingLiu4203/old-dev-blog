@@ -65,7 +65,7 @@ The `resolverMap` is a map of resolvers for each relevant GraphQL object type. A
 * `context`: a context object shared by all resolvers in a particular query. It is often used to provide per-request state.
 * `info`: it contains information about the execution state (such as name, path etc) of the query, rarely used.
 
-The result of a resolver can be one of the following types: 
+The result of a resolver can be one of the following types:
 
 * `null` or `undefined`: for nullable field, it is `null`. Otherwise, it will bubble up to the nearest nullable field and set this field to `null`.
 * An array: for a list field.
@@ -77,3 +77,4 @@ GraphQL uses a default resolver if a field doesn't have a resolver defined. It r
 When you have a field that is a union or an interface type, you need to specify an extra `__resolveType` field in your resolver map, which determines the result type.
 
 `addSchemaLevelResolveFunction` adds a function that is executed only once per query. It is good for scenarios such as authentication. `combineResolvers` combines multiple resolvers into one.
+
