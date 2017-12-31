@@ -119,3 +119,110 @@ In `User.relationMethod(Project)`, the `User` is the **source** and the `Project
 When you create associations, foreign key references with constratints will be created automatically. The constraint can be customized using `onUpdate` and `onDelete` options. Valid options are `RESTRICT`, `CASCADE`, `NO ACTION`, `SET DEFAULT`, and `SET NULL`. For one-to-one and one-to-many, the default is `SET NULL` for deletion and `CASCADE` for updates. For many-to-many, the default is `CASCADE` for both delte and update. use `constraints: false` to avoid cyclic dependency error.
 
 An instance can be created with nested assoications in one step.
+
+## 6 Transactions
+
+Sequelize support automatical transaction management and explict transaction management. The automatic one uses callback and the manual one use promise `then()`.
+
+Use `sequelize.transaction(function (t) {... })` to use the automatic transaction management. The sequelize methods use `{transaction: t}` as the 2nd argument. To automatically pass transaction context to all operations, use continuation local storage module and instantiate a namespace. Below is an example: 
+
+```javascript
+const cls = require('continuation-local-storage')
+const namespace = cls.createNamespace('my-very-own-namespace')
+const Sequelize = require('sequelize')
+Sequelize.useCLS(namespace)
+
+const sequelize = new Sequelize(....)
+    // With CLS enabled, all operations are inside the transaction
+})
+```
+
+Sequelize also support concurrent and partial transactions. SQLite supports only one transaction.
+
+When creating transaction context, you can configure it with the following options: 
+
+* `automcommit`: default is `true`
+* `isolationLevel`: default is `'REPEATABLE_READ`.
+* `deferrable`: `'NOT DEFERRABLE'` for Postgres.
+
+## 7 Scope and Hooks
+
+Scoping defines commonly used queries that can be reused by one or more models. You can define `socpes` in model creation or call `addScope` to add scopes to a model. A `defaultScope` is always applied. You can remove the default scope by calling `unscoped()` or invoking another scope as `scope(null)` or `scope(anouther)`.
+
+Scopes apply to `find`, `findAll`, `count`, `update`, `increment` and `destroy`.
+
+You can add scope to assoiations which will be applied automatically for the accessor methods.
+
+Hooks are lifecycle events that allow functions to be called before or after sequelize create, destroy, update, and save operations. You use `hooks` property in the option object when you define a model. You can use `hook`, `addHook`, or `Model.hookName` to define hooks and use `removeHook` to remove hooks.
+
+You can define global hooks that is executed in every model.
+
+## 8 Migrations
+
+Sequelize allows you to use migration files to transfer database schema into another state. The migration files describe the way how to get to the new state and how to revert the changes in order to get back to the old state. The `sequelize-cli` supports migrations and project bootstrapping.
+
+### 8.1 Bootstrapping
+
+Run the following two command to create an empty project.
+
+```sh
+npm install --save sequelize-cli
+node_modules/.bin/sequelize init
+```
+
+The following folders will be created:
+
+* `config`: contains the `config.json` file that tells CLI how to connect with database.
+* `models`: contains all models.
+* `migrations`: contains all migration files
+* `seeders`: contains all seed files.
+
+The following is a sample config file: 
+
+```json
+{
+  development: {
+    username: 'root',
+    password: null,
+    database: 'database_development',
+    host: '127.0.0.1',
+    dialect: 'mysql'
+  },
+  test: {
+    username: 'root',
+    password: null,
+    database: 'database_test',
+    host: '127.0.0.1',
+    dialect: 'mysql'
+  },
+  production: {
+    username: process.env.PROD_DB_USERNAME,
+    password: process.env.PROD_DB_PASSWORD,
+    database: process.env.PROD_DB_NAME,
+    host: process.env.PROD_DB_HOSTNAME,
+    dialect: 'mysql'
+  }
+}
+```
+
+If database doesn't exist, call `db:create` to create a new one.
+
+### 8.2 Creating First Model and Migration
+
+Use `model:generate` to create a model. `node_modules/.bin/sequelize model:generate --name User --attributes firstName:string,lastName:string,email:string` create a model file `user` in the `models` folder and a migration file like `xxxx-create-user.js` in `migrations` folder.
+
+Then run `node_modules/.bin/sequelize db:migrate` to create a table in database. It executes the following steps:
+
+* create a `SequelizeMeta` table to record the migration.
+* run new migration files by checking the `SequelizeMeta` table.
+* record the mirgration in the `SequelizeMeta` table.
+
+Run `node_modules/.bin/sequelize db:migrate:undo` to revert the most recent migration. Use `db:migrate:undo:all` to revert back to initial state. Use `--to migration-file.js` to go back to a specific migration.
+
+Run `node_modules/.bin/sequelize seed:generate --name demo-user` to create a seed file in `seeders` folder. The seed file has teh same `up` and `down` semantics like migration files. Run `node_modules/.bin/sequelize db:seed:all` to create seeds in a database or `node_modules/.bin/sequelize db:seed:undo` to revert seeds.
+
+### 8.3 Configuration
+
+Use `.sequelizerc` to configure Sequelize file paths. The configuration file can be replaced by JS code file. It's helpful to use environment variables like `process.env.PROD_DB_USERNAME`.
+
+The migration and seed storage can be `sequelize` using the `SequelizeMeta` table, `json` using JSON files or `none` for no storage.
