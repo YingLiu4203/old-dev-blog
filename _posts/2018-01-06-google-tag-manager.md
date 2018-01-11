@@ -75,4 +75,4 @@ A web container has the following built-in variables (not a complete list):
 
 GTM provides a variable type called "Google Analytics Settings" acting as a central location to configure sets of settings for use across multiple tags. When you use universal analytics, you are asked to select or create a new setting variable.
 
-You first select a track type that could be a page view or an event. It is often to start off with a setting variable that contains just the tracking ID. To create a new settings variable, you provide tracking ID, cookie domain (`auto` if you have no other tags), additional settings such as custom fields, dimensions, metrics, content groups, and etc. Finally, define trigger 
+You first select a track type that could be a page view or an event. It is often to start off with a setting variable that contains just the tracking ID. To create a new settings variable, you provide tracking ID, cookie domain (`auto` if you have no other tags), additional settings such as custom fields, dimensions, metrics, content groups, and etc. Finally, define triggers that make the tag fire.
