@@ -47,7 +47,7 @@ Field and directive arguments take input values that can be literal primitives o
 
 ### 1.5. Input Types
 
-It is convenient to combine query variables into an input type. An input type is a list of anouther input type, or a non-null variant of other input type. a `Type !` means a non-null type.
+It is convenient to combine query variables into an input type. An input type is a list of anouther input type, or a non-null variant of other input type. a `Type !` means a non-null type. You can not resue a type as an input type or vice versa because an input type only allows basci scalar types, list types and other input types. Interface, unions and circular ferences are not allowed in an input type.
 
 ### 1.6. Variables
 
