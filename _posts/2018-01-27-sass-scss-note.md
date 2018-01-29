@@ -4,7 +4,7 @@ title: Sass and Scss Note
 categories:
 - Notes
 tags:
-- analytics gtm
+- css
 ---
 # Sass and Scss Note
 
